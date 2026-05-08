@@ -1,0 +1,28 @@
+# deps & build
+node_modules
+.next
+out
+
+# git & editor
+.git
+.gitignore
+.cursor
+.vscode
+
+# docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# test & tooling (not needed for app image)
+coverage
+__tests__
+jest.config.mjs
+jest.setup.ts
+
+# misc
+*.md
+.env*
+!.env.example
+npm-debug.log*
+.DS_Store

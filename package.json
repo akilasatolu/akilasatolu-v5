@@ -10,7 +10,14 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "test": "jest",
-        "test:watch": "jest --watch"
+        "test:watch": "jest --watch",
+        "docker:build": "docker compose build",
+        "docker:up": "docker compose up -d",
+        "docker:down": "docker compose down",
+        "docker:logs": "docker compose logs -f web",
+        "docker:dev": "docker compose -f docker-compose.dev.yml up --build",
+        "docker:dev:down": "docker compose -f docker-compose.dev.yml down",
+        "docker:dev:logs": "docker compose -f docker-compose.dev.yml logs -f web"
     },
     "dependencies": {
         "jotai": "^2.20.0",

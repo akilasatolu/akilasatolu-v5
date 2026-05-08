@@ -1,0 +1,13 @@
+name: akilasatolu-v5-prod
+
+services:
+    web:
+        container_name: akilasatolu-v5-prod-web
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        environment:
+            NODE_ENV: production
+        restart: unless-stopped
