@@ -1,65 +1,94 @@
-import Image from "next/image";
-
 export default function Home() {
     return (
-        <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-            <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-                <Image
-                    className="dark:invert"
-                    src="/next.svg"
-                    alt="Next.js logo"
-                    width={100}
-                    height={20}
-                    priority
-                />
-                <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-                    <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-                        To get started, edit the page.tsx file.
+        <main className="flex min-h-dvh flex-1 flex-col">
+            <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-12 md:py-16">
+                <header className="mb-12 border-b border-[color:var(--border)] pb-8">
+                    <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+                        Akilasatolu
                     </h1>
-                    <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-                        Looking for a starting point or more instructions? Head over to{" "}
-                        <a
-                            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                            className="font-medium text-zinc-950 dark:text-zinc-50"
-                        >
-                            Templates
-                        </a>{" "}
-                        or the{" "}
-                        <a
-                            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                            className="font-medium text-zinc-950 dark:text-zinc-50"
-                        >
-                            Learning
-                        </a>{" "}
-                        center.
+                    <p className="mt-2 text-[color:var(--muted)]">
+                        スタイル確認用のベースレイアウト（本番ページの土台）
                     </p>
+                </header>
+
+                <div className="flex flex-col gap-14">
+                    <section aria-labelledby="sec-typography">
+                        <h2
+                            id="sec-typography"
+                            className="mb-4 text-lg font-semibold text-foreground"
+                        >
+                            Typography
+                        </h2>
+                        <div className="space-y-3 text-foreground">
+                            <p>本文（--color / text-foreground）。複数行のダミーテキストで行間と折り返しを確認します。</p>
+                            <p className="text-[color:var(--muted)]">
+                                補助テキスト（--muted）。キャプションやメタ情報向け。
+                            </p>
+                        </div>
+                    </section>
+
+                    <section aria-labelledby="sec-headings">
+                        <h2
+                            id="sec-headings"
+                            className="mb-4 text-lg font-semibold text-foreground"
+                        >
+                            Headings
+                        </h2>
+                        <div className="space-y-2">
+                            <h3 className="text-xl font-semibold text-foreground">見出し h3</h3>
+                            <h4 className="text-base font-semibold text-foreground">見出し h4</h4>
+                        </div>
+                    </section>
+
+                    <section aria-labelledby="sec-links">
+                        <h2
+                            id="sec-links"
+                            className="mb-4 text-lg font-semibold text-foreground"
+                        >
+                            Links
+                        </h2>
+                        <p className="text-foreground">
+                            通常リンク:{" "}
+                            <a href="https://example.com" className="underline-offset-2">
+                                example.com
+                            </a>
+                        </p>
+                    </section>
+
+                    <section aria-labelledby="sec-actions">
+                        <h2
+                            id="sec-actions"
+                            className="mb-4 text-lg font-semibold text-foreground"
+                        >
+                            Actions
+                        </h2>
+                        <button
+                            type="button"
+                            className="rounded-md bg-[color:var(--accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[color:var(--accent-hover)]"
+                        >
+                            Primary button
+                        </button>
+                    </section>
+
+                    <section aria-labelledby="sec-card">
+                        <h2 id="sec-card" className="mb-4 text-lg font-semibold text-foreground">
+                            Card
+                        </h2>
+                        <div className="rounded-lg border border-[color:var(--border)] bg-[color:var(--card-bg)] p-4 text-foreground">
+                            カード領域（--card-bg / --border）
+                        </div>
+                    </section>
+
+                    <section aria-labelledby="sec-code">
+                        <h2 id="sec-code" className="mb-4 text-lg font-semibold text-foreground">
+                            Code
+                        </h2>
+                        <pre className="overflow-x-auto rounded-lg bg-[color:var(--code-bg)] p-4 font-mono text-sm text-[color:var(--code-text)]">
+                            <code>const hello = () =&gt; console.log(&quot;hello&quot;);</code>
+                        </pre>
+                    </section>
                 </div>
-                <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-                    <a
-                        className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-                        href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <Image
-                            className="dark:invert"
-                            src="/vercel.svg"
-                            alt="Vercel logomark"
-                            width={16}
-                            height={16}
-                        />
-                        Deploy Now
-                    </a>
-                    <a
-                        className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-                        href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Documentation
-                    </a>
-                </div>
-            </main>
-        </div>
+            </div>
+        </main>
     );
 }
