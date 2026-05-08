@@ -23,9 +23,8 @@ a:hover {
 
 a:visited {
     color: var(--accent-visited);
-    opacity: var(--accent-visited-opacity);
 }
 
-a:visited:hover {
-    opacity: 1;
+p {
+    overflow: hidden;
 }
