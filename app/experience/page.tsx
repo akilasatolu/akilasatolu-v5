@@ -13,13 +13,13 @@ export default async function ExperiencePage() {
         <div className="flex min-h-0 w-full flex-1 flex-col justify-start md:flex-row md:items-stretch gap-8 md:gap-4">
             <div className="w-full min-w-0 md:flex-1">
                 <PageTitle title="Experience" />
-                <ul className="mt-8 space-y-12">
+                <ul className="mt-8 divide-y divide-[color:var(--border)]">
                     {Projects.map((pj) => {
                         const [start, end] = pj.pjPeriod;
                         const periodLabel = `${start} — ${end}`;
 
                         return (
-                            <li key={pj.pjTitle}>
+                            <li key={pj.pjTitle} className="pt-6 pb-6 first:pt-0 last:pb-0">
                                 <p className="text-sm text-[color:var(--muted)]">{periodLabel}</p>
                                 <p className="mt-2 text-xl font-semibold tracking-tight text-foreground">
                                     {pj.pjTitle}
@@ -49,7 +49,7 @@ export default async function ExperiencePage() {
                             className="flex min-w-0 flex-row border-b border-[color:var(--border)] pb-3 last:border-b-0 last:pb-0"
                         >
                             <p className="min-w-0 max-w-full break-words font-medium text-foreground whitespace-normal">
-                                <span className="text-sm">{row.skill} : </span>{row.years}
+                                <span className="text-sm font-normal">{row.skill} : </span>{row.years}
                             </p>
                         </li>
                     ))}
