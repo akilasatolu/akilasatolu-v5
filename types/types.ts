@@ -30,3 +30,12 @@ export type PhotographyPhoto = {
 export type PhotographyData = {
     photos: PhotographyPhoto[];
 };
+
+export type BlogPost = {
+    slug: string;
+    title: string;
+    date: string;
+    draft: boolean;
+    tags: string[];
+    description: string;
+};

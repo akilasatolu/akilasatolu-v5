@@ -25,6 +25,114 @@ a:visited {
     color: var(--accent-visited);
 }
 
+a.blog-post-card,
+a.blog-post-card:hover,
+a.blog-post-card:visited {
+    text-decoration: none;
+}
+
 p {
     overflow: hidden;
+}
+
+/* Blog post body (Markdown → HTML) */
+.blog-content {
+    line-height: 1.75;
+}
+
+.blog-content>*+* {
+    margin-top: 1.25rem;
+}
+
+.blog-content h1,
+.blog-content h2,
+.blog-content h3,
+.blog-content h4 {
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+}
+
+.blog-content h1 {
+    font-size: 1.875rem;
+    margin-bottom: 2rem;
+}
+
+.blog-content h2 {
+    font-size: 1.5rem;
+}
+
+.blog-content h3 {
+    font-size: 1.25rem;
+}
+
+.blog-content ul,
+.blog-content ol {
+    padding-left: 1.5rem;
+}
+
+.blog-content ul {
+    list-style-type: disc;
+}
+
+.blog-content ol {
+    list-style-type: decimal;
+}
+
+.blog-content li+li {
+    margin-top: 0.375rem;
+}
+
+.blog-content a {
+    text-decoration: underline;
+}
+
+.blog-content pre {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+    background: var(--code-bg);
+    padding: 1rem;
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.875rem;
+    color: var(--code-text);
+}
+
+.blog-content code {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.875em;
+    background: var(--inline-code-bg);
+    color: var(--code-text);
+    border-radius: 0.25rem;
+    padding: 0.15em 0.4em;
+    border: 1px solid var(--border);
+}
+
+.blog-content pre code {
+    font-size: inherit;
+    background: transparent;
+    color: inherit;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+}
+
+.blog-content blockquote {
+    border-left: 3px solid var(--border);
+    padding-left: 1rem;
+    color: var(--muted);
+}
+
+.blog-content hr {
+    color: var(--border);
+}
+
+.blog-content-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+}
+
+.blog-content p {
+    overflow: visible;
 }
