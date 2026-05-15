@@ -31,6 +31,7 @@ jobs:
                   DOCKER_BUILDKIT=1 docker build -f Dockerfile.static \
                     --progress=plain \
                     --target export \
+                    --output type=local,dest=./out \
                     --secret "id=aws_env,src=${aws_env}" \
                     --build-arg S3_BUCKET_BLOG="${{ secrets.S3_BUCKET_BLOG }}" \
                     --build-arg S3_PATH_BLOG="${{ secrets.S3_PATH_BLOG }}" \
@@ -38,11 +39,7 @@ jobs:
                     --build-arg S3_PATH_PHOTOGRAPHY="${{ secrets.S3_PATH_PHOTOGRAPHY }}" \
                     --build-arg S3_BUCKET_EXPERIENCE="${{ secrets.S3_BUCKET_EXPERIENCE }}" \
                     --build-arg S3_PATH_EXPERIENCE="${{ secrets.S3_PATH_EXPERIENCE }}" \
-                    -t akilasatolu-static .
-
-                  cid="$(docker create akilasatolu-static)"
-                  docker cp "${cid}:/out" ./out
-                  docker rm "${cid}"
+                    .
 
             - name: Configure AWS credentials (OIDC)
               uses: aws-actions/configure-aws-credentials@v4

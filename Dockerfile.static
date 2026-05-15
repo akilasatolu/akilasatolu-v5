@@ -34,4 +34,5 @@ RUN --mount=type=secret,id=aws_env \
     sh -c 'set -a && . /run/secrets/aws_env && set +a && npm run build:static'
 
 FROM scratch AS export
-COPY --from=builder /app/out /out
+# ルートに配置（build --output type=local,dest=./out でそのまま展開できる）
+COPY --from=builder /app/out /
