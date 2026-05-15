@@ -1,4 +1,5 @@
 import { getS3BucketPhotography } from "@/lib/env";
+import { getPhotographyImageKey } from "@/lib/photography";
 import { fetchS3Bytes } from "@/lib/s3";
 
 export const dynamic = "force-dynamic";
@@ -9,9 +10,13 @@ export async function GET(request: Request) {
         return new Response("Missing key", { status: 400 });
     }
 
+    if (key.includes("..")) {
+        return new Response("Invalid key", { status: 400 });
+    }
+
     const { body, contentType } = await fetchS3Bytes({
         bucket: getS3BucketPhotography(),
-        key,
+        key: getPhotographyImageKey(key),
     });
 
     return new Response(Buffer.from(body), {

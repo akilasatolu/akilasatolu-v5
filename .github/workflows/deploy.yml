@@ -1,0 +1,51 @@
+name: Deploy to S3
+
+on:
+    push:
+        branches:
+            - main
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Build static site in Docker
+              run: |
+                  docker build -f Dockerfile.static \
+                    --target export \
+                    --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+                    --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+                    --build-arg AWS_REGION=${{ secrets.AWS_REGION }} \
+                    --build-arg S3_BUCKET_BLOG=${{ secrets.S3_BUCKET_BLOG }} \
+                    --build-arg S3_PATH_BLOG=${{ secrets.S3_PATH_BLOG }} \
+                    --build-arg S3_BUCKET_PHOTOGRAPHY=${{ secrets.S3_BUCKET_PHOTOGRAPHY }} \
+                    --build-arg S3_PATH_PHOTOGRAPHY=${{ secrets.S3_PATH_PHOTOGRAPHY }} \
+                    --build-arg S3_BUCKET_EXPERIENCE=${{ secrets.S3_BUCKET_EXPERIENCE }} \
+                    --build-arg S3_PATH_EXPERIENCE=${{ secrets.S3_PATH_EXPERIENCE }} \
+                    -t akilasatolu-static .
+
+                  docker create --name static-out akilasatolu-static
+                  docker cp static-out:/out ./out
+                  docker rm static-out
+
+            - name: Configure AWS credentials (OIDC)
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+                  aws-region: ${{ secrets.AWS_REGION || 'ap-northeast-1' }}
+
+            - name: Clear deploy bucket
+              run: aws s3 rm "s3://${{ secrets.AWS_S3_BUCKET }}/" --recursive
+
+            - name: Upload static site
+              run: |
+                  aws s3 sync ./out "s3://${{ secrets.AWS_S3_BUCKET }}/" \
+                    --delete \
+                    --cache-control "max-age=0,no-cache,no-store,must-revalidate"

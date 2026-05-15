@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getS3BucketPhotography, getS3PathPhotography } from "@/lib/env";
+import { isStaticExport } from "@/lib/isStaticExport";
 import { fetchS3Text } from "@/lib/s3";
 import type { PhotographyData } from "@/types/types";
 
@@ -15,9 +16,17 @@ export function getPhotographyImageKey(photoFileName: string): string {
     return `${PHOTO_OBJECT_PREFIX}${name}`;
 }
 
-/** 画像プロキシ URL（/photography/image?key=...） */
+/**
+ * 写真 URL
+ * - dev / standalone: S3 プロキシ（/photography/image?key=...）
+ * - SSG export: 静的ファイル（/photography/image/...、build:static で S3 同期）
+ */
 export function getPhotographyImageUrl(photoFileName: string): string {
     const key = getPhotographyImageKey(photoFileName);
+    if (isStaticExport()) {
+        const filename = key.split("/").pop() ?? key;
+        return `/photography/image/${filename}`;
+    }
     return `/photography/image?key=${encodeURIComponent(key)}`;
 }
 

@@ -20,7 +20,14 @@
 # production
 /build
 
+# S3 同期済み静的アセット（build:static）
+/public/blog/image/*
+!/public/blog/image/.gitkeep
+/public/photography/image/*
+!/public/photography/image/.gitkeep
+
 # misc
+.cache/
 .DS_Store
 *.pem
 

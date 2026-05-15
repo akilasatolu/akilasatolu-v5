@@ -3,7 +3,9 @@
  * 参照: .env
  *
  * ページごとにバケットが異なる想定（S3_BUCKET_* + S3_PATH_*）。
- * AWS 認証は SDK のデフォルトチェーン（ローカル: .env / SSO、CI: OIDC 等）。
+ * 公開用バケット（SSG 配置先）は AWS_S3_BUCKET（CI deploy のみ。JSON 取得バケットとは別）。
+ * dev / standalone: 画像は Route Handler で S3 プロキシ。
+ * build:static: 画像は public/ に同期し /blog/image/, /photography/image/ として配信。
  */
 
 function requireEnv(name: string): string {
