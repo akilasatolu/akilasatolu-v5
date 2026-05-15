@@ -1,9 +1,11 @@
 /**
- * SSG 前に S3 から静的アセットを public/ へ同期する（build:static / CI 用）
+ * SSG 前に S3 から静的アセットを public/ へ同期する（GetObject のみ。ListBucket 不要）
  */
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { GetObjectCommand, ListObjectsV2Command, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+
+const IMAGE_IN_MD_RE = /!\[[^\]]*]\(([^)]+)\)/g;
 
 function requireEnv(name) {
     const value = process.env[name]?.trim();
@@ -16,61 +18,115 @@ function requireEnv(name) {
 const region = process.env.AWS_REGION?.trim() || "ap-northeast-1";
 const client = new S3Client({ region });
 
-async function downloadPrefix({ bucket, prefix, destRoot }) {
-    const normalizedPrefix = prefix.endsWith("/") ? prefix : `${prefix}/`;
-    let continuationToken;
+async function fetchText(bucket, key) {
+    const normalizedKey = key.replace(/^\/+/, "");
+    const response = await client.send(
+        new GetObjectCommand({
+            Bucket: bucket,
+            Key: normalizedKey,
+        }),
+    );
 
+    if (!response.Body) {
+        throw new Error(`S3 object is empty: s3://${bucket}/${normalizedKey}`);
+    }
+
+    return response.Body.transformToString("utf-8");
+}
+
+async function downloadFile(bucket, key, destPath) {
+    const normalizedKey = key.replace(/^\/+/, "");
+    const response = await client.send(
+        new GetObjectCommand({
+            Bucket: bucket,
+            Key: normalizedKey,
+        }),
+    );
+
+    if (!response.Body) {
+        throw new Error(`S3 object is empty: s3://${bucket}/${normalizedKey}`);
+    }
+
+    const body = await response.Body.transformToByteArray();
+    await mkdir(path.dirname(destPath), { recursive: true });
+    await writeFile(destPath, body);
+}
+
+function imageFilenameFromHref(href) {
+    const filename = href.split(/[/\\]/).pop()?.split("?")[0]?.split("#")[0] ?? href;
+    if (!filename || filename.includes("..") || filename.includes("/")) {
+        return null;
+    }
+    return filename;
+}
+
+async function syncBlogImages(blogBucket, blogIndexKey) {
+    const destRoot = path.join("public", "blog", "image");
     await rm(destRoot, { recursive: true, force: true });
     await mkdir(destRoot, { recursive: true });
 
-    do {
-        const response = await client.send(
-            new ListObjectsV2Command({
-                Bucket: bucket,
-                Prefix: normalizedPrefix,
-                ContinuationToken: continuationToken,
-            }),
-        );
+    const posts = JSON.parse(await fetchText(blogBucket, blogIndexKey));
+    const published = posts.filter((post) => !post.draft);
+    const filenames = new Set();
 
-        for (const object of response.Contents ?? []) {
-            if (!object.Key || object.Key.endsWith("/")) {
-                continue;
-            }
-
-            const filename = path.basename(object.Key);
-            const destPath = path.join(destRoot, filename);
-
-            const file = await client.send(
-                new GetObjectCommand({
-                    Bucket: bucket,
-                    Key: object.Key,
-                }),
-            );
-            const body = await file.Body.transformToByteArray();
-            await writeFile(destPath, body);
+    for (const post of published) {
+        const mdKey = `posts/${post.slug}.md`;
+        let md;
+        try {
+            md = await fetchText(blogBucket, mdKey);
+        } catch (error) {
+            throw new Error(`Failed to fetch ${mdKey}: ${error.message}`);
         }
+        for (const match of md.matchAll(IMAGE_IN_MD_RE)) {
+            const filename = imageFilenameFromHref(match[1]);
+            if (filename) {
+                filenames.add(filename);
+            }
+        }
+    }
 
-        continuationToken = response.NextContinuationToken;
-    } while (continuationToken);
+    for (const filename of filenames) {
+        const key = `posts-img/${filename}`;
+        try {
+            await downloadFile(blogBucket, key, path.join(destRoot, filename));
+            console.log(`  ${key}`);
+        } catch (error) {
+            throw new Error(`Failed to download ${key}: ${error.message}`);
+        }
+    }
+}
+
+async function syncPhotographyImages(photographyBucket, photographyIndexKey) {
+    const destRoot = path.join("public", "photography", "image");
+    await rm(destRoot, { recursive: true, force: true });
+    await mkdir(destRoot, { recursive: true });
+
+    const { photos } = JSON.parse(await fetchText(photographyBucket, photographyIndexKey));
+
+    for (const item of photos) {
+        const name = item.photo.replace(/^\/+/, "");
+        const key = name.startsWith("photos/") ? name : `photos/${name}`;
+        const filename = path.basename(key);
+        try {
+            await downloadFile(photographyBucket, key, path.join(destRoot, filename));
+            console.log(`  ${key}`);
+        } catch (error) {
+            throw new Error(`Failed to download ${key}: ${error.message}`);
+        }
+    }
 }
 
 async function main() {
     const blogBucket = requireEnv("S3_BUCKET_BLOG");
+    const blogIndexKey = requireEnv("S3_PATH_BLOG");
     const photographyBucket = requireEnv("S3_BUCKET_PHOTOGRAPHY");
+    const photographyIndexKey = requireEnv("S3_PATH_PHOTOGRAPHY");
 
-    console.log("Syncing blog images: posts-img/ -> public/blog/image/");
-    await downloadPrefix({
-        bucket: blogBucket,
-        prefix: "posts-img",
-        destRoot: path.join("public", "blog", "image"),
-    });
+    console.log("Syncing blog images (from markdown references)...");
+    await syncBlogImages(blogBucket, blogIndexKey);
 
-    console.log("Syncing photography images: photos/ -> public/photography/image/");
-    await downloadPrefix({
-        bucket: photographyBucket,
-        prefix: "photos",
-        destRoot: path.join("public", "photography", "image"),
-    });
+    console.log("Syncing photography images (from JSON)...");
+    await syncPhotographyImages(photographyBucket, photographyIndexKey);
 
     console.log("Static assets ready.");
 }

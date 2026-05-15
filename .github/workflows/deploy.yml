@@ -18,22 +18,31 @@ jobs:
 
             - name: Build static site in Docker
               run: |
-                  docker build -f Dockerfile.static \
+                  set -euo pipefail
+                  aws_env="$(mktemp)"
+                  trap 'rm -f "${aws_env}"' EXIT
+                  umask 077
+                  printf 'AWS_ACCESS_KEY_ID=%s\nAWS_SECRET_ACCESS_KEY=%s\nAWS_REGION=%s\n' \
+                    "${{ secrets.AWS_ACCESS_KEY_ID }}" \
+                    "${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+                    "${{ secrets.AWS_REGION || 'ap-northeast-1' }}" \
+                    > "${aws_env}"
+
+                  DOCKER_BUILDKIT=1 docker build -f Dockerfile.static \
+                    --progress=plain \
                     --target export \
-                    --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
-                    --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-                    --build-arg AWS_REGION=${{ secrets.AWS_REGION }} \
-                    --build-arg S3_BUCKET_BLOG=${{ secrets.S3_BUCKET_BLOG }} \
-                    --build-arg S3_PATH_BLOG=${{ secrets.S3_PATH_BLOG }} \
-                    --build-arg S3_BUCKET_PHOTOGRAPHY=${{ secrets.S3_BUCKET_PHOTOGRAPHY }} \
-                    --build-arg S3_PATH_PHOTOGRAPHY=${{ secrets.S3_PATH_PHOTOGRAPHY }} \
-                    --build-arg S3_BUCKET_EXPERIENCE=${{ secrets.S3_BUCKET_EXPERIENCE }} \
-                    --build-arg S3_PATH_EXPERIENCE=${{ secrets.S3_PATH_EXPERIENCE }} \
+                    --secret "id=aws_env,src=${aws_env}" \
+                    --build-arg S3_BUCKET_BLOG="${{ secrets.S3_BUCKET_BLOG }}" \
+                    --build-arg S3_PATH_BLOG="${{ secrets.S3_PATH_BLOG }}" \
+                    --build-arg S3_BUCKET_PHOTOGRAPHY="${{ secrets.S3_BUCKET_PHOTOGRAPHY }}" \
+                    --build-arg S3_PATH_PHOTOGRAPHY="${{ secrets.S3_PATH_PHOTOGRAPHY }}" \
+                    --build-arg S3_BUCKET_EXPERIENCE="${{ secrets.S3_BUCKET_EXPERIENCE }}" \
+                    --build-arg S3_PATH_EXPERIENCE="${{ secrets.S3_PATH_EXPERIENCE }}" \
                     -t akilasatolu-static .
 
-                  docker create --name static-out akilasatolu-static
-                  docker cp static-out:/out ./out
-                  docker rm static-out
+                  cid="$(docker create akilasatolu-static)"
+                  docker cp "${cid}:/out" ./out
+                  docker rm "${cid}"
 
             - name: Configure AWS credentials (OIDC)
               uses: aws-actions/configure-aws-credentials@v4
