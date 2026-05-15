@@ -20,3 +20,13 @@ export type SkillTimelineStat = {
     /** Σ level（例: 1+2+3 → 6 years） */
     years: number;
 };
+
+export type PhotographyPhoto = {
+    id: string;
+    photo: string;
+    text: string;
+};
+
+export type PhotographyData = {
+    photos: PhotographyPhoto[];
+};
