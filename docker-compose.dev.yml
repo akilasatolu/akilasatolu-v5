@@ -10,6 +10,8 @@ services:
         ports:
             # Host 3001 so prod (3000) and dev can run at the same time
             - "3001:3000"
+        env_file:
+            - .env
         volumes:
             - .:/app
             - web_dev_node_modules:/app/node_modules

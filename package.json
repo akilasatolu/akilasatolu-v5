@@ -20,6 +20,7 @@
         "docker:dev:logs": "docker compose -f docker-compose.dev.yml logs -f web"
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.1047.0",
         "jotai": "^2.20.0",
         "next": "16.2.4",
         "react": "19.2.4",

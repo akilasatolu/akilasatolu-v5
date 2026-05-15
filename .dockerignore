@@ -23,6 +23,5 @@ jest.setup.ts
 # misc
 *.md
 .env*
-!.env.example
 npm-debug.log*
 .DS_Store
