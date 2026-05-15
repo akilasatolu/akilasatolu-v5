@@ -1,8 +1,10 @@
 # [akilasatolu-v5](https://drj0u9hm1kc44.cloudfront.net/)
 
-個人サイト（ブログ・写真・About・Experience）の Next.js アプリケーション。
+Blog: https://github.com/akilasatolu/akilasatolu-blog
 
-コンテンツ（JSON・Markdown・画像）は **Amazon S3** に置き、アプリはビルド／実行モードに応じて S3 から取得するか、静的ファイルとして配信します。
+Photography: https://github.com/akilasatolu/akilasatolu-photography
+
+Experience: https://github.com/akilasatolu/akilasatolu-experience
 
 ---
 
