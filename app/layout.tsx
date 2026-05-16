@@ -23,6 +23,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
     title: "akilasatolu",
     description: "Akilasatolu's personal site featuring blog, photography, about me, and experience.",
+    manifest: "/site.webmanifest",
     openGraph: {
         title: "akilasatolu",
         description:
