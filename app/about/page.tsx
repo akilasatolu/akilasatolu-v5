@@ -1,5 +1,6 @@
 import { PageTitle } from "@/components/atoms/PageTitle";
 import { ColBlock } from "@/components/atoms/ColBlock";
+import { SocialLinks } from "@/components/atoms/SocialLinks";
 import Link from "next/link";
 
 export default function AboutPage() {
@@ -7,6 +8,7 @@ export default function AboutPage() {
         <div className="flex min-h-0 w-full flex-1 flex-col justify-start">
             <PageTitle title="About" />
             <div className="mt-8 space-y-4">
+                <SocialLinks />
                 <ColBlock>
                     <p>Hi there, I’m Akira Satoru.</p>
                     <p>Since 2020, I have been working as a software engineer developing web services.</p>

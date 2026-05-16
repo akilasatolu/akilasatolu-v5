@@ -20,8 +20,8 @@ Experience: https://github.com/akilasatolu/akilasatolu-experience
 | スタイル | [Tailwind CSS](https://tailwindcss.com/) 4（PostCSS） |
 | フォント | [Geist](https://vercel.com/font)（`next/font/google`） |
 | 状態管理 | [Jotai](https://jotai.org/) |
-| Markdown | [marked](https://marked.js.org/)（ブログ本文のレンダリング） |
-| AWS SDK | [@aws-sdk/client-s3](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/)（S3 読み取り・ビルド時アセット同期） |
+| Markdown | [marked](https://marked.js.org/)（ブログ本文） |
+| AWS SDK | [@aws-sdk/client-s3](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/)（ビルド時・サーバーから S3 取得） |
 
 ### 品質・開発ツール
 
@@ -35,54 +35,68 @@ Experience: https://github.com/akilasatolu/akilasatolu-experience
 
 | 分類 | 技術 |
 |------|------|
-| 本番ホスティング | Amazon S3（静的サイト） |
+| 本番配信 | Amazon S3（静的サイト）+ **CloudFront**（HTML + 画像） |
 | CI/CD | [GitHub Actions](https://github.com/features/actions) |
-| コンテナ | Docker / Docker Compose（本番 standalone・開発・SSG ビルド用） |
-| 認証（CI） | IAM アクセスキー（ビルド時 S3 取得）+ **OIDC**（デプロイ時 `AssumeRoleWithWebIdentity`） |
+| コンテナ | Docker / Docker Compose（standalone 本番・開発・SSG ビルド） |
+| CI 認証 | IAM アクセスキー（SSG ビルド時のコンテンツ S3 読み取り）+ **OIDC**（デプロイ先 S3 への書き込み） |
 
 ---
 
 ## アーキテクチャ概要
 
-### コンテンツの置き場所（S3）
+### データの流れ
 
-ページごとに **バケットとオブジェクトキー** を分けています（`lib/env.ts`）。
+```text
+[コンテンツ S3]  blog / photography / experience 各バケット
+       │  JSON・Markdown（ビルド時 or サーバー取得）
+       ▼
+[Next.js]  akilasatolu-v5
+       │  画像 URL のみ参照（バイナリは同期しない）
+       ▼
+[CloudFront]  /akilasatolu-blog-image/*  /akilasatolu-photography/*
+       ▲
+[デプロイ S3]  out/（HTML/CSS/JS）← CI が sync
+```
 
-| ページ | 主なデータ |
-|--------|------------|
-| `/`（ブログ一覧） | 投稿一覧 JSON（`S3_PATH_BLOG`） |
-| `/blog/[slug]` | `akilasatolu-blog/{slug}.md`、画像は `akilasatolu-blog-image/` |
-| `/photography` | 写真一覧 JSON（`S3_PATH_PHOTOGRAPHY`）、画像は `akilasatolu-photography/` |
-| `/experience` | スキル等 JSON（`S3_PATH_EXPERIENCE`） |
+- **コンテンツ用バケット**（`S3_BUCKET_*`）: テキスト・画像オブジェクトの保管。アプリは `GetObject` で JSON / Markdown を取得。
+- **デプロイ先バケット**（`AWS_S3_BUCKET`）: `npm run build:static` の `out/` のみ。ブログ・写真の**画像ファイルは含めない**（CF 側のパスで配信）。
 
-**デプロイ先バケット**（`AWS_S3_BUCKET`）は、上記のコンテンツ用バケットとは別です。CI でビルドした `out/` をここに配置します。
+### コンテンツの S3 キー（`lib/env.ts`）
 
-### 2 つの実行モード
+| ページ | データ | 画像（CF 上のパス） |
+|--------|--------|---------------------|
+| `/` | 投稿一覧 JSON（`S3_PATH_BLOG`） | — |
+| `/blog/[slug]` | `akilasatolu-blog/{slug}.md` | `/akilasatolu-blog-image/{filename}` |
+| `/photography` | 一覧 JSON（`S3_PATH_PHOTOGRAPHY`） | `/akilasatolu-photography/...` |
+| `/experience` | JSON（`S3_PATH_EXPERIENCE`） | — |
 
-`next.config.ts` は環境変数 `STATIC_EXPORT` で出力形式を切り替えます。
+### 実行モード
 
-| モード | トリガー | `output` | 画像の扱い |
-|--------|----------|----------|------------|
-| **開発 / standalone 本番** | `npm run dev` / `npm run build` | `standalone` | `CONTENT_CDN_BASE` でブログ・写真画像を CF 絶対 URL（`akilasatolu-blog-image/` `akilasatolu-photography/`） |
-| **静的エクスポート（SSG）** | `npm run build:static` | `export` | 画像は `/akilasatolu-blog-image/…` `/akilasatolu-photography/…`（本番と同一 CF パス） |
+`next.config.ts` は `STATIC_EXPORT` で `output` を切り替えます。
 
-静的ビルドの流れ（`scripts/build-static.mjs`）: `STATIC_EXPORT=1 next build` → `out/`
+| モード | コマンド | `output` | 画像の `src` |
+|--------|----------|----------|----------------|
+| 開発 / standalone | `npm run dev` / `npm run build` | `standalone` | `{CONTENT_CDN_BASE}/akilasatolu-blog-image/...` 等（絶対 URL） |
+| 本番（SSG） | `npm run build:static` | `export` | `/akilasatolu-blog-image/...` 等（サイトと同一ドメイン＝CF） |
+
+- ロジック: `lib/contentAssetUrl.ts` の `contentImagePublicUrl`
+- SSG ビルド: `scripts/build-static.mjs` → `STATIC_EXPORT=1 next build` → `out/`
 
 ---
 
 ## ディレクトリ構成（主要）
 
-```
-app/                 # App Router ページ・Route Handler
+```text
+app/                 # App Router ページ
 components/          # atoms / organisms / templates
-lib/                 # S3 取得、ブログ・写真・Experience ロジック
-scripts/             # build:static
-public/              # 静的ファイル（ブログ・写真の画像は CF パス `/akilasatolu-*-…` で参照）
-styles/              # グローバル CSS・テーマ
-.github/workflows/   # main への push で S3 デプロイ
-Dockerfile           # standalone 本番イメージ
-Dockerfile.static    # SSG ビルド用（成果物を out に export）
-Dockerfile.dev       # 開発用
+lib/                 # S3、ブログ・写真・Experience、画像 URL
+scripts/             # build-static.mjs
+public/              # favicon 等（画像は CF パスを参照）
+styles/
+.github/workflows/   # main push で S3 デプロイ
+Dockerfile           # standalone 本番
+Dockerfile.static    # SSG ビルド → out/
+Dockerfile.dev       # 開発
 ```
 
 ---
@@ -90,10 +104,10 @@ Dockerfile.dev       # 開発用
 ## スクリプト
 
 ```bash
-npm run dev              # 開発サーバー
+npm run dev              # 開発サーバー（.env に CONTENT_CDN_BASE 必須）
 npm run build            # standalone ビルド
-npm run build:static     # 静的エクスポート（.env または環境変数が必要）
-npm run start            # 本番サーバー起動
+npm run build:static     # 静的エクスポート → out/
+npm run start            # standalone 起動
 npm run lint
 npm run test
 npm run format           # Prettier
@@ -102,26 +116,28 @@ npm run format           # Prettier
 ### Docker
 
 ```bash
-npm run docker:dev       # 開発（docker-compose.dev.yml）
-npm run docker:up        # 本番 standalone（docker-compose.yml）
+npm run docker:dev       # docker-compose.dev.yml
+npm run docker:up        # standalone 本番（docker-compose.yml）
 ```
 
 ---
 
 ## 環境変数
 
-ローカルは `.env` を参照。CI は GitHub Actions Secrets。
+ローカルは `.env`。CI は GitHub Actions Secrets。
 
 | 変数 | 用途 |
 |------|------|
-| `AWS_REGION` | AWS リージョン（未設定時 `ap-northeast-1`） |
-| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | ローカル・CI ビルド時の S3 読み取り |
+| `AWS_REGION` | リージョン（未設定時 `ap-northeast-1`） |
+| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | ローカル・CI の S3 読み取り（SSG ビルド内） |
 | `S3_BUCKET_*` / `S3_PATH_*` | コンテンツ用バケットと JSON キー |
-| `CONTENT_CDN_BASE` | **dev / standalone 必須**。ブログ・写真 `img` 用 CloudFront URL（例 `https://dxxxx.cloudfront.net`、末尾スラッシュなし）。SSG では未使用（ルート相対 `/akilasatolu-blog-image/…` 等）。Docker standalone ビルド時は build-arg で渡す |
+| `CONTENT_CDN_BASE` | **dev / standalone 必須**。CF のベース URL（例 `https://dxxxx.cloudfront.net`、末尾スラッシュなし）。SSG では未使用 |
 | `AWS_S3_BUCKET` | 静的サイトのデプロイ先（CI のみ） |
-| `AWS_ROLE_TO_ASSUME` | CI デプロイ用 IAM ロール ARN（OIDC） |
+| `AWS_ROLE_TO_ASSUME` | デプロイ用 IAM ロール ARN（OIDC） |
 
-サーバー専用のため、`NEXT_PUBLIC_` プレフィックスは使っていません。
+`NEXT_PUBLIC_` は使っていません（サーバー専用）。
+
+**Docker standalone:** `CONTENT_CDN_BASE` は **ビルド時**（`Dockerfile` の ARG）に渡す。`/photography` などは `force-static` のため、実行時の `env_file` だけでは画像 URL が埋まりません。
 
 ---
 
@@ -129,9 +145,11 @@ npm run docker:up        # 本番 standalone（docker-compose.yml）
 
 `main` への push で:
 
-1. **Docker（`Dockerfile.static`）** — BuildKit secret で AWS 認証を渡し、`build:static` を実行。`--output type=local,dest=./out` で成果物を取得
-2. **OIDC** — `aws-actions/configure-aws-credentials` でロールを引き受け
-3. **S3** — デプロイバケットを空にしてから `aws s3 sync ./out`（キャッシュ無効ヘッダ付き）
+1. **Docker（`Dockerfile.static`）** — BuildKit secret で AWS 認証を渡し `build:static`。`--output type=local,dest=./out`
+2. **OIDC** — `configure-aws-credentials` で `AWS_ROLE_TO_ASSUME` を引き受け
+3. **S3** — デプロイバケットを空にしてから `aws s3 sync ./out`（`--delete`、キャッシュ無効ヘッダ）
+
+`Dockerfile.static` に `CONTENT_CDN_BASE` は**不要**（SSG はルート相対パスのみ）。
 
 ---
 
@@ -140,7 +158,7 @@ npm run docker:up        # 本番 standalone（docker-compose.yml）
 | パス | 内容 |
 |------|------|
 | `/` | ブログ一覧（公開記事のみ） |
-| `/blog/[slug]` | ブログ記事詳細 |
+| `/blog/[slug]` | ブログ記事 |
 | `/photography` | 写真ギャラリー |
 | `/experience` | スキル・経験 |
-| `/about` | About |
+| `/about` | 私について |

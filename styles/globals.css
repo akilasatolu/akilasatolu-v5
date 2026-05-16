@@ -31,6 +31,17 @@ a.blog-post-card:visited {
     text-decoration: none;
 }
 
+a.social-icon-link,
+a.social-icon-link:visited {
+    color: var(--muted);
+    text-decoration: none;
+}
+
+a.social-icon-link:hover {
+    color: var(--accent);
+    text-decoration: none;
+}
+
 p {
     overflow: hidden;
 }
