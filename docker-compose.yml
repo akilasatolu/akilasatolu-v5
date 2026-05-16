@@ -16,6 +16,7 @@ services:
                 S3_PATH_PHOTOGRAPHY: ${S3_PATH_PHOTOGRAPHY}
                 S3_BUCKET_EXPERIENCE: ${S3_BUCKET_EXPERIENCE}
                 S3_PATH_EXPERIENCE: ${S3_PATH_EXPERIENCE}
+                CONTENT_CDN_BASE: ${CONTENT_CDN_BASE:-}
         ports:
             - "3000:3000"
         env_file:

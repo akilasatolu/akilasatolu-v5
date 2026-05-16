@@ -63,15 +63,13 @@ Experience: https://github.com/akilasatolu/akilasatolu-experience
 
 | モード | トリガー | `output` | 画像の扱い |
 |--------|----------|----------|------------|
-| **開発 / standalone 本番** | `npm run dev` / `npm run build` | `standalone` | Route Handler（`/blog/image`, `/photography/image`）が S3 をプロキシ |
-| **静的エクスポート（SSG）** | `npm run build:static` | `export` | ビルド前に S3 から `public/` へ同期し、`/blog/image/…`, `/photography/image/…` として配信 |
+| **開発 / standalone 本番** | `npm run dev` / `npm run build` | `standalone` | `CONTENT_CDN_BASE` でブログ・写真画像を CF 絶対 URL（`akilasatolu-blog-image/` `akilasatolu-photography/`） |
+| **静的エクスポート（SSG）** | `npm run build:static` | `export` | 画像は `/akilasatolu-blog-image/…` `/akilasatolu-photography/…`（本番と同一 CF パス） |
 
 静的ビルドの流れ（`scripts/build-static.mjs`）:
 
-1. `scripts/prepare-static-assets.mjs` — 公開記事の Markdown 参照・写真 JSON から必要画像だけ S3 へ **GetObject**（ListBucket 不要）
-2. 画像用 Route Handler を一時退避（`output: export` と非両立のため）
-3. `STATIC_EXPORT=1 next build` → `out/`
-4. Route Handler を復元
+1. `scripts/prepare-static-assets.mjs` — 画像の `public/` 同期は行わない（CF パス参照のため）
+2. `STATIC_EXPORT=1 next build` → `out/`
 
 ---
 
@@ -82,7 +80,7 @@ app/                 # App Router ページ・Route Handler
 components/          # atoms / organisms / templates
 lib/                 # S3 取得、ブログ・写真・Experience ロジック
 scripts/             # build:static、静的アセット同期
-public/              # 静的アセット（SSG 時に blog/photography 画像が同期される）
+public/              # その他の静的ファイル（ブログ・写真の画像は CF 上の S3 キーと同一パスで参照）
 styles/              # グローバル CSS・テーマ
 .github/workflows/   # main への push で S3 デプロイ
 Dockerfile           # standalone 本番イメージ
@@ -122,6 +120,7 @@ npm run docker:up        # 本番 standalone（docker-compose.yml）
 | `AWS_REGION` | AWS リージョン（未設定時 `ap-northeast-1`） |
 | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | ローカル・CI ビルド時の S3 読み取り |
 | `S3_BUCKET_*` / `S3_PATH_*` | コンテンツ用バケットと JSON キー |
+| `CONTENT_CDN_BASE` | **dev / standalone 必須**。ブログ・写真 `img` 用 CloudFront URL（例 `https://dxxxx.cloudfront.net`、末尾スラッシュなし）。SSG では未使用（ルート相対 `/akilasatolu-blog-image/…` 等）。Docker standalone ビルド時は build-arg で渡す |
 | `AWS_S3_BUCKET` | 静的サイトのデプロイ先（CI のみ） |
 | `AWS_ROLE_TO_ASSUME` | CI デプロイ用 IAM ロール ARN（OIDC） |
 

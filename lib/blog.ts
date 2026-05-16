@@ -1,7 +1,7 @@
 import "server-only";
 
 import { getS3BucketBlog, getS3PathBlog } from "@/lib/env";
-import { isStaticExport } from "@/lib/isStaticExport";
+import { contentImagePublicUrl } from "@/lib/contentAssetUrl";
 import { fetchS3Text } from "@/lib/s3";
 import type { BlogPost } from "@/types/types";
 
@@ -43,15 +43,8 @@ export function getBlogImageS3Key(imageKey: string): string {
     return `${BLOG_POSTS_IMG_PREFIX}${normalized}`;
 }
 
-/**
- * マークダウン内の画像 URL
- * - dev / standalone: S3 プロキシ（/blog/image?key=...）
- * - SSG export: 静的ファイル（/blog/image/...、build:static で S3 同期）
- */
-export function getBlogImageProxyUrl(imageHref: string): string {
+/** マークダウン内の画像 URL（S3 キー `akilasatolu-blog-image/...` を CloudFront へ） */
+export function getBlogImageUrl(imageHref: string): string {
     const filename = imageHref.split(/[/\\]/).pop()?.split("?")[0]?.split("#")[0] ?? imageHref;
-    if (isStaticExport()) {
-        return `/blog/image/${filename}`;
-    }
-    return `/blog/image?key=${encodeURIComponent(filename)}`;
+    return contentImagePublicUrl(getBlogImageS3Key(filename));
 }

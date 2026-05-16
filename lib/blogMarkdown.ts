@@ -1,7 +1,7 @@
 import "server-only";
 
 import { marked } from "marked";
-import { getBlogImageProxyUrl } from "@/lib/blog";
+import { getBlogImageUrl } from "@/lib/blog";
 
 const FRONT_MATTER_RE = /^---\r?\n[\s\S]*?\r?\n---\r?\n?/;
 
@@ -24,14 +24,14 @@ marked.use({
             if (!href) {
                 return "";
             }
-            const src = getBlogImageProxyUrl(href);
+            const src = getBlogImageUrl(href);
             const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
             return `<img src="${src}" alt="${escapeHtml(text)}"${titleAttr} loading="lazy" class="blog-content-img" />`;
         },
     },
 });
 
-/** S3 の Markdown を HTML に変換（画像は /blog/image 経由） */
+/** S3 の Markdown を HTML に変換（画像は CloudFront / CONTENT_CDN_BASE） */
 export function renderBlogMarkdown(markdown: string): string {
     return marked.parse(stripFrontMatter(markdown), { async: false, gfm: true }) as string;
 }

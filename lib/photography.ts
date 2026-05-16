@@ -1,7 +1,7 @@
 import "server-only";
 
 import { getS3BucketPhotography, getS3PathPhotography } from "@/lib/env";
-import { isStaticExport } from "@/lib/isStaticExport";
+import { contentImagePublicUrl } from "@/lib/contentAssetUrl";
 import { fetchS3Text } from "@/lib/s3";
 import type { PhotographyData } from "@/types/types";
 
@@ -16,18 +16,9 @@ export function getPhotographyImageKey(photoFileName: string): string {
     return `${PHOTO_OBJECT_PREFIX}${name}`;
 }
 
-/**
- * 写真 URL
- * - dev / standalone: S3 プロキシ（/photography/image?key=...）
- * - SSG export: 静的ファイル（/photography/image/...、build:static で S3 同期）
- */
+/** 写真 URL（S3 キー `akilasatolu-photography/...` を CloudFront へ） */
 export function getPhotographyImageUrl(photoFileName: string): string {
-    const key = getPhotographyImageKey(photoFileName);
-    if (isStaticExport()) {
-        const filename = key.split("/").pop() ?? key;
-        return `/photography/image/${filename}`;
-    }
-    return `/photography/image?key=${encodeURIComponent(key)}`;
+    return contentImagePublicUrl(getPhotographyImageKey(photoFileName));
 }
 
 /** ビルド時（SSG）に S3 から photography 用 JSON を取得してパースする */
