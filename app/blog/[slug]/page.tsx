@@ -1,12 +1,12 @@
-import { PageTitle } from "@/components/atoms/PageTitle";
+import { BlogPostNavigation } from "@/components/organisms/BlogPostNavigation";
 import {
     getBlogPostMarkdown,
     getPublishedBlogPostBySlug,
     getPublishedBlogPosts,
 } from "@/lib/blog";
+import { getAdjacentPublishedBlogPosts } from "@/lib/blogNeighbors";
 import { renderBlogMarkdown } from "@/lib/blogMarkdown";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-static";
@@ -42,15 +42,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         notFound();
     }
 
+    const posts = await getPublishedBlogPosts();
+    const neighbors = getAdjacentPublishedBlogPosts(slug, posts);
     const markdown = await getBlogPostMarkdown(slug);
     const html = renderBlogMarkdown(markdown);
 
     return (
-        <div className="flex min-h-0 w-full flex-1 flex-col justify-start">
+        <div className="flex min-h-0 w-full flex-1 flex-col">
             <div
-                className="blog-content"
+                className="blog-content min-h-0 flex-1"
                 dangerouslySetInnerHTML={{ __html: html }}
             />
+            <BlogPostNavigation {...neighbors} />
         </div>
     );
 }
