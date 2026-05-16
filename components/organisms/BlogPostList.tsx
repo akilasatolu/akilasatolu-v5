@@ -10,7 +10,38 @@ type BlogPostListProps = {
 };
 
 const paginationButtonClassName =
-    "rounded-md border border-[color:var(--border)] bg-[color:var(--card-bg)] px-3 py-1.5 text-sm text-foreground transition-colors enabled:hover:border-[color:var(--accent)] disabled:cursor-not-allowed disabled:opacity-40";
+    "inline-flex items-center justify-center rounded-md border border-[color:var(--border)] bg-[color:var(--card-bg)] px-3 py-1.5 text-sm text-foreground transition-colors hover:border-[color:var(--accent)]";
+
+type PaginationControlProps = {
+    visible: boolean;
+    onClick: () => void;
+    ariaLabel: string;
+    label: string;
+};
+
+const PaginationControl = ({ visible, onClick, ariaLabel, label }: PaginationControlProps) => {
+    if (visible) {
+        return (
+            <button
+                type="button"
+                onClick={onClick}
+                aria-label={ariaLabel}
+                className={paginationButtonClassName}
+            >
+                {label}
+            </button>
+        );
+    }
+
+    return (
+        <span
+            aria-hidden="true"
+            className={`${paginationButtonClassName} invisible pointer-events-none`}
+        >
+            {label}
+        </span>
+    );
+};
 
 export const BlogPostList = ({ posts }: BlogPostListProps) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -41,8 +72,8 @@ export const BlogPostList = ({ posts }: BlogPostListProps) => {
     }
 
     return (
-        <>
-            <ul className="mt-8 flex flex-col gap-4">
+        <div className="flex min-h-0 flex-1 flex-col">
+            <ul className="mt-8 flex min-h-0 flex-1 flex-col gap-4">
                 {paginatedPosts.map((post) => (
                     <li key={post.slug}>
                         <Link
@@ -78,48 +109,36 @@ export const BlogPostList = ({ posts }: BlogPostListProps) => {
             </ul>
             <nav
                 aria-label="Blog pagination"
-                className="mt-8 flex items-center justify-center gap-2 sm:gap-3"
+                className="mt-auto flex shrink-0 items-center justify-center gap-2 pt-8 sm:gap-3"
             >
-                <button
-                    type="button"
+                <PaginationControl
+                    visible={safePage > 1}
                     onClick={goToFirst}
-                    disabled={safePage <= 1}
-                    aria-label="First page"
-                    className={paginationButtonClassName}
-                >
-                    &lt;&lt;
-                </button>
-                <button
-                    type="button"
+                    ariaLabel="First page"
+                    label="<<"
+                />
+                <PaginationControl
+                    visible={safePage > 1}
                     onClick={goToPrev}
-                    disabled={safePage <= 1}
-                    aria-label="Previous page"
-                    className={paginationButtonClassName}
-                >
-                    &lt;
-                </button>
+                    ariaLabel="Previous page"
+                    label="<"
+                />
                 <span className="min-w-[3ch] px-1 text-center text-sm text-[color:var(--muted)] tabular-nums">
                     {safePage}/{totalPages}
                 </span>
-                <button
-                    type="button"
+                <PaginationControl
+                    visible={safePage < totalPages}
                     onClick={goToNext}
-                    disabled={safePage >= totalPages}
-                    aria-label="Next page"
-                    className={paginationButtonClassName}
-                >
-                    &gt;
-                </button>
-                <button
-                    type="button"
+                    ariaLabel="Next page"
+                    label=">"
+                />
+                <PaginationControl
+                    visible={safePage < totalPages}
                     onClick={goToLast}
-                    disabled={safePage >= totalPages}
-                    aria-label="Last page"
-                    className={paginationButtonClassName}
-                >
-                    &gt;&gt;
-                </button>
+                    ariaLabel="Last page"
+                    label=">>"
+                />
             </nav>
-        </>
+        </div>
     );
 };

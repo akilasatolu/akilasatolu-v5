@@ -117,8 +117,8 @@ export const BlogPageContent = ({ posts }: BlogPageContentProps) => {
     };
 
     return (
-        <div className="flex min-h-0 w-full flex-1 flex-col justify-start gap-8 md:flex-row md:items-stretch md:gap-4">
-            <div className="w-full min-w-0 md:flex-1">
+        <div className="flex min-h-0 w-full flex-1 flex-col gap-8 md:flex-row md:items-stretch md:gap-4">
+            <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col md:flex-1">
                 <PageTitle title="Blog" />
                 <BlogSearchPanel
                     {...searchPanelProps}
