@@ -1,9 +1,13 @@
 "use client";
 
 import { PageTitle } from "@/components/atoms/PageTitle";
+import {
+    matchesBlogDescription,
+    sanitizeBlogSearchQuery,
+} from "@/lib/blogSearch";
 import type { BlogPost } from "@/types/types";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ChangeEvent } from "react";
 
 type BlogPageContentProps = {
     posts: BlogPost[];
@@ -11,6 +15,7 @@ type BlogPageContentProps = {
 
 export const BlogPageContent = ({ posts }: BlogPageContentProps) => {
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const sortedTags = useMemo(() => {
         const tagCounts = new Map<string, number>();
@@ -25,15 +30,25 @@ export const BlogPageContent = ({ posts }: BlogPageContentProps) => {
         );
     }, [posts]);
 
-    const filteredPosts = useMemo(() => {
+    const tagFilteredPosts = useMemo(() => {
         if (!selectedTag) {
             return posts;
         }
         return posts.filter((post) => post.tags.includes(selectedTag));
     }, [posts, selectedTag]);
 
+    const filteredPosts = useMemo(() => {
+        return tagFilteredPosts.filter((post) =>
+            matchesBlogDescription(post.description, searchQuery),
+        );
+    }, [tagFilteredPosts, searchQuery]);
+
     const handleTagClick = (tag: string) => {
         setSelectedTag((current) => (current === tag ? null : tag));
+    };
+
+    const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(sanitizeBlogSearchQuery(event.target.value));
     };
 
     return (
@@ -43,7 +58,7 @@ export const BlogPageContent = ({ posts }: BlogPageContentProps) => {
                 <ul className="mt-8 flex flex-col gap-4">
                     {filteredPosts.length === 0 ? (
                         <li className="text-sm text-[color:var(--muted)]">
-                            No posts found for this tag.
+                            No posts found.
                         </li>
                     ) : (
                         filteredPosts.map((post) => (
@@ -85,7 +100,20 @@ export const BlogPageContent = ({ posts }: BlogPageContentProps) => {
                 <p className="text-lg font-semibold tracking-tight text-foreground">
                     Search
                 </p>
-                <ul className="mt-8 flex flex-wrap gap-2">
+                <label className="mt-4 block">
+                    <span className="sr-only">Filter posts by description</span>
+                    <input
+                        type="search"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        maxLength={100}
+                        autoComplete="off"
+                        spellCheck={false}
+                        placeholder="Search by keyword"
+                        className="w-full rounded-md border border-[color:var(--border)] bg-[color:var(--card-bg)] px-3 py-2 text-sm text-foreground placeholder:text-[color:var(--muted)]"
+                    />
+                </label>
+                <ul className="mt-4 flex flex-wrap gap-2">
                     {sortedTags.map(([tag, count]) => {
                         const isSelected = selectedTag === tag;
                         return (
