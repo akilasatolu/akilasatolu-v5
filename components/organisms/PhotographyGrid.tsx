@@ -20,7 +20,7 @@ export const PhotographyGrid = ({ items }: PhotographyGridProps) => {
             {items.map((item) => (
                 <li
                     key={item.id}
-                    className="overflow-hidden border border-[color:var(--border)]"
+                    className="border border-[color:var(--border)] has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[color:var(--accent)]"
                 >
                     <button
                         type="button"
@@ -42,7 +42,7 @@ export const PhotographyGrid = ({ items }: PhotographyGridProps) => {
                                 { ariaLabel: item.text },
                             )
                         }
-                        className="block w-full cursor-pointer text-left"
+                        className="block w-full cursor-pointer text-left focus-visible:outline-none"
                     >
                         <div className="relative aspect-square w-full overflow-hidden">
                             {/* eslint-disable-next-line @next/next/no-img-element */}

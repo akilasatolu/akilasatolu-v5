@@ -13,6 +13,18 @@ body {
     font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+/* Keyboard focus (Tab navigation) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
 /* Base interactive text */
 a {
     color: var(--accent);

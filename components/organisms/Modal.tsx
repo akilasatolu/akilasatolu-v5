@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { getFocusableElements, trapFocus } from "@/lib/focusTrap";
 
 function subscribeMounted(onStoreChange: () => void): () => void {
     onStoreChange();
@@ -21,6 +22,9 @@ export const Modal = ({
     children,
     ariaLabel = "Dialog",
 }: ModalProps) => {
+    const dialogRef = useRef<HTMLDivElement>(null);
+    const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+
     const mounted = useSyncExternalStore(
         subscribeMounted,
         () => true,
@@ -28,14 +32,23 @@ export const Modal = ({
     );
 
     useEffect(() => {
-        if (!open) {
+        if (!open || !dialogRef.current) {
             return;
         }
+
+        const dialog = dialogRef.current;
+        previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+
+        const focusable = getFocusableElements(dialog);
+        (focusable[0] ?? dialog).focus();
 
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
                 onClose();
+                return;
             }
+
+            trapFocus(event, dialog);
         };
 
         const previousOverflow = document.body.style.overflow;
@@ -45,6 +58,7 @@ export const Modal = ({
         return () => {
             document.body.style.overflow = previousOverflow;
             document.removeEventListener("keydown", handleKeyDown);
+            previouslyFocusedRef.current?.focus();
         };
     }, [open, onClose]);
 
@@ -60,10 +74,12 @@ export const Modal = ({
         >
             <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
             <div
+                ref={dialogRef}
                 role="dialog"
                 aria-modal="true"
                 aria-label={ariaLabel}
-                className="relative z-10 flex h-[90vh] w-[90vw] flex-col overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--background)] shadow-lg"
+                tabIndex={-1}
+                className="relative z-10 flex h-[90vh] w-[90vw] flex-col overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--background)] shadow-lg outline-none"
                 onClick={(event) => event.stopPropagation()}
             >
                 <button
