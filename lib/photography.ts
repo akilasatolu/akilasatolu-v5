@@ -5,12 +5,12 @@ import { isStaticExport } from "@/lib/isStaticExport";
 import { fetchS3Text } from "@/lib/s3";
 import type { PhotographyData } from "@/types/types";
 
-const PHOTO_OBJECT_PREFIX = "photos/";
+const PHOTO_OBJECT_PREFIX = "akilasatolu-photography/";
 
-/** S3 オブジェクトキー: photos/{photo} */
+/** S3 オブジェクトキー: akilasatolu-photography/{photo}（JSON がフルキーならそのまま） */
 export function getPhotographyImageKey(photoFileName: string): string {
     const name = photoFileName.replace(/^\/+/, "");
-    if (name.startsWith("photos/")) {
+    if (name.startsWith(PHOTO_OBJECT_PREFIX)) {
         return name;
     }
     return `${PHOTO_OBJECT_PREFIX}${name}`;

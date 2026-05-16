@@ -70,7 +70,7 @@ async function syncBlogImages(blogBucket, blogIndexKey) {
     const filenames = new Set();
 
     for (const post of published) {
-        const mdKey = `posts/${post.slug}.md`;
+        const mdKey = `akilasatolu-blog/${post.slug}.md`;
         let md;
         try {
             md = await fetchText(blogBucket, mdKey);
@@ -86,7 +86,7 @@ async function syncBlogImages(blogBucket, blogIndexKey) {
     }
 
     for (const filename of filenames) {
-        const key = `posts-img/${filename}`;
+        const key = `akilasatolu-blog-image/${filename}`;
         try {
             await downloadFile(blogBucket, key, path.join(destRoot, filename));
             console.log(`  ${key}`);
@@ -94,6 +94,15 @@ async function syncBlogImages(blogBucket, blogIndexKey) {
             throw new Error(`Failed to download ${key}: ${error.message}`);
         }
     }
+}
+
+function photographyImageObjectKey(photoField) {
+    const name = photoField.replace(/^\/+/, "");
+    const prefix = "akilasatolu-photography/";
+    if (name.startsWith(prefix)) {
+        return name;
+    }
+    return prefix + name;
 }
 
 async function syncPhotographyImages(photographyBucket, photographyIndexKey) {
@@ -104,8 +113,7 @@ async function syncPhotographyImages(photographyBucket, photographyIndexKey) {
     const { photos } = JSON.parse(await fetchText(photographyBucket, photographyIndexKey));
 
     for (const item of photos) {
-        const name = item.photo.replace(/^\/+/, "");
-        const key = name.startsWith("photos/") ? name : `photos/${name}`;
+        const key = photographyImageObjectKey(item.photo);
         const filename = path.basename(key);
         try {
             await downloadFile(photographyBucket, key, path.join(destRoot, filename));

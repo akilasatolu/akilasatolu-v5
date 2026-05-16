@@ -51,8 +51,8 @@ Experience: https://github.com/akilasatolu/akilasatolu-experience
 | ページ | 主なデータ |
 |--------|------------|
 | `/`（ブログ一覧） | 投稿一覧 JSON（`S3_PATH_BLOG`） |
-| `/blog/[slug]` | `posts/{slug}.md`、画像は `posts-img/` |
-| `/photography` | 写真一覧 JSON（`S3_PATH_PHOTOGRAPHY`）、画像は `photos/` |
+| `/blog/[slug]` | `akilasatolu-blog/{slug}.md`、画像は `akilasatolu-blog-image/` |
+| `/photography` | 写真一覧 JSON（`S3_PATH_PHOTOGRAPHY`）、画像は `akilasatolu-photography/` |
 | `/experience` | スキル等 JSON（`S3_PATH_EXPERIENCE`） |
 
 **デプロイ先バケット**（`AWS_S3_BUCKET`）は、上記のコンテンツ用バケットとは別です。CI でビルドした `out/` をここに配置します。
