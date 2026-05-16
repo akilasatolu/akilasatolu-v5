@@ -1,13 +1,13 @@
 "use client";
 
 import { PageTitle } from "@/components/atoms/PageTitle";
+import { BlogPostList } from "@/components/organisms/BlogPostList";
 import { BlogTagList } from "@/components/organisms/BlogTagList";
 import {
     matchesBlogDescription,
     sanitizeBlogSearchQuery,
 } from "@/lib/blogSearch";
 import type { BlogPost } from "@/types/types";
-import Link from "next/link";
 import { useMemo, useState, type ChangeEvent } from "react";
 
 type BlogPageContentProps = {
@@ -126,46 +126,10 @@ export const BlogPageContent = ({ posts }: BlogPageContentProps) => {
                     collapsibleTags
                     className="mt-8 md:hidden"
                 />
-                <ul className="mt-8 flex flex-col gap-4">
-                    {filteredPosts.length === 0 ? (
-                        <li className="text-sm text-[color:var(--muted)]">
-                            No posts found.
-                        </li>
-                    ) : (
-                        filteredPosts.map((post) => (
-                            <li key={post.slug}>
-                                <Link
-                                    href={`/blog/${post.slug}/`}
-                                    className="blog-post-card block rounded-lg border border-[color:var(--border)] bg-[color:var(--card-bg)] p-5 text-inherit no-underline transition-colors hover:border-[color:var(--accent)] hover:text-inherit"
-                                >
-                                    <article>
-                                        <div className="text-xl font-semibold tracking-tight text-foreground">
-                                            {post.title}
-                                        </div>
-                                        <p className="mt-2 text-sm text-[color:var(--muted)]">
-                                            {post.date}
-                                        </p>
-                                        {post.tags.length > 0 && (
-                                            <ul className="mt-3 flex flex-wrap gap-2">
-                                                {post.tags.map((tag) => (
-                                                    <li
-                                                        key={`${post.slug}-${tag}`}
-                                                        className="rounded-md border border-[color:var(--border)] bg-[color:var(--tag-bg)] px-2 py-0.5 text-xs text-foreground"
-                                                    >
-                                                        {tag}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                        <p className="mt-4 line-clamp-2 leading-relaxed text-foreground">
-                                            {post.description}
-                                        </p>
-                                    </article>
-                                </Link>
-                            </li>
-                        ))
-                    )}
-                </ul>
+                <BlogPostList
+                    key={`${selectedTag ?? ""}\0${searchQuery}`}
+                    posts={filteredPosts}
+                />
             </div>
             <BlogSearchPanel
                 {...searchPanelProps}
