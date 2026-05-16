@@ -122,6 +122,23 @@ function applyResolvedThemeToRoot(
     root.style.color = "";
 }
 
+export function applyThemeColorMeta(resolved: ResolvedTheme): void {
+    if (typeof document === "undefined") {
+        return;
+    }
+
+    const content = THEME_CSS_VARS[resolved].background;
+    let meta = document.querySelector('meta[name="theme-color"]');
+
+    if (!meta) {
+        meta = document.createElement("meta");
+        meta.setAttribute("name", "theme-color");
+        document.head.appendChild(meta);
+    }
+
+    meta.setAttribute("content", content);
+}
+
 export function applyThemePreference(
     preference: ThemePreference,
     options?: { bootstrap?: boolean },
@@ -130,11 +147,10 @@ export function applyThemePreference(
         return;
     }
 
-    applyResolvedThemeToRoot(
-        preference,
-        resolveTheme(preference),
-        options?.bootstrap ?? false,
-    );
+    const resolved = resolveTheme(preference);
+
+    applyResolvedThemeToRoot(preference, resolved, options?.bootstrap ?? false);
+    applyThemeColorMeta(resolved);
 }
 
 export function clearThemeBootstrapStyles(): void {
@@ -195,6 +211,14 @@ export function getThemeInitScript(): string {
         root.style.setProperty("--color", color);
         root.style.backgroundColor = background;
         root.style.color = color;
+
+        var themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (!themeMeta) {
+            themeMeta = document.createElement("meta");
+            themeMeta.setAttribute("name", "theme-color");
+            document.head.appendChild(themeMeta);
+        }
+        themeMeta.setAttribute("content", background);
     } catch (_) {}
 })();
 `.trim();

@@ -24,6 +24,10 @@ export const metadata: Metadata = {
     title: "akilasatolu",
     description: "Akilasatolu's personal site featuring blog, photography, about me, and experience.",
     manifest: "/site.webmanifest",
+    themeColor: [
+        { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+        { media: "(prefers-color-scheme: dark)", color: "#2b2b2b" },
+    ],
     openGraph: {
         title: "akilasatolu",
         description:
