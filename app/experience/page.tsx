@@ -42,7 +42,7 @@ export default async function ExperiencePage() {
             </div>
             <aside className="w-full shrink-0 border-[color:var(--border)] border-t pt-8 md:min-h-full md:pl-4 md:grow md:shrink md:basis-[25%] md:min-w-[20%] md:max-w-[30%] md:self-stretch md:border-l md:border-t-0 md:pt-0">
                 <p className="text-lg font-semibold tracking-tight text-foreground">Skills overview (years)</p>
-                <ul className="mt-8 space-y-3">
+                <ul className="mt-4 space-y-3">
                     {skillStats.map((row) => (
                         <li
                             key={row.skill}
