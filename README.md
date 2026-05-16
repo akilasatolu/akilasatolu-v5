@@ -66,10 +66,7 @@ Experience: https://github.com/akilasatolu/akilasatolu-experience
 | **開発 / standalone 本番** | `npm run dev` / `npm run build` | `standalone` | `CONTENT_CDN_BASE` でブログ・写真画像を CF 絶対 URL（`akilasatolu-blog-image/` `akilasatolu-photography/`） |
 | **静的エクスポート（SSG）** | `npm run build:static` | `export` | 画像は `/akilasatolu-blog-image/…` `/akilasatolu-photography/…`（本番と同一 CF パス） |
 
-静的ビルドの流れ（`scripts/build-static.mjs`）:
-
-1. `scripts/prepare-static-assets.mjs` — 画像の `public/` 同期は行わない（CF パス参照のため）
-2. `STATIC_EXPORT=1 next build` → `out/`
+静的ビルドの流れ（`scripts/build-static.mjs`）: `STATIC_EXPORT=1 next build` → `out/`
 
 ---
 
@@ -79,8 +76,8 @@ Experience: https://github.com/akilasatolu/akilasatolu-experience
 app/                 # App Router ページ・Route Handler
 components/          # atoms / organisms / templates
 lib/                 # S3 取得、ブログ・写真・Experience ロジック
-scripts/             # build:static、静的アセット同期
-public/              # その他の静的ファイル（ブログ・写真の画像は CF 上の S3 キーと同一パスで参照）
+scripts/             # build:static
+public/              # 静的ファイル（ブログ・写真の画像は CF パス `/akilasatolu-*-…` で参照）
 styles/              # グローバル CSS・テーマ
 .github/workflows/   # main への push で S3 デプロイ
 Dockerfile           # standalone 本番イメージ

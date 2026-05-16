@@ -1,5 +1,5 @@
 /**
- * SSG ビルド: prepare-static-assets → export
+ * SSG ビルド: export
  */
 import { spawn } from "node:child_process";
 
@@ -19,5 +19,4 @@ function run(command, args, env = {}) {
     });
 }
 
-await run("node", ["scripts/prepare-static-assets.mjs"]);
 await run("npx", ["next", "build"], { STATIC_EXPORT: "1" });
