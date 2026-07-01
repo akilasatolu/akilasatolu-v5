@@ -72,7 +72,7 @@ export const Modal = ({
             role="presentation"
             onClick={onClose}
         >
-            <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
+            <div className="absolute inset-0 bg-[color:var(--overlay)]" aria-hidden="true" />
             <div
                 ref={dialogRef}
                 role="dialog"
