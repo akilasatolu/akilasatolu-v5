@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
     title: "akilasatolu",
-    description: "Akilasatolu's personal site featuring blog, photography, about me, and experience.",
+    description: "Akilasatolu's personal site featuring blog, about me, and experience.",
     manifest: "/site.webmanifest",
     themeColor: [
         { media: "(prefers-color-scheme: light)", color: "#ffffff" },
@@ -31,13 +31,13 @@ export const metadata: Metadata = {
     openGraph: {
         title: "akilasatolu",
         description:
-            "Akilasatolu's personal site featuring blog, photography, about me, and experience.",
+            "Akilasatolu's personal site featuring blog, about me, and experience.",
     },
     twitter: {
         card: "summary_large_image",
         title: "akilasatolu",
         description:
-            "Akilasatolu's personal site featuring blog, photography, about me, and experience.",
+            "Akilasatolu's personal site featuring blog, about me, and experience.",
     },
 };
 

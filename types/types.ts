@@ -21,16 +21,6 @@ export type SkillTimelineStat = {
     years: number;
 };
 
-export type PhotographyPhoto = {
-    id: string;
-    photo: string;
-    text: string;
-};
-
-export type PhotographyData = {
-    photos: PhotographyPhoto[];
-};
-
 export type BlogPost = {
     slug: string;
     title: string;

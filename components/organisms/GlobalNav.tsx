@@ -15,9 +15,6 @@ export const GlobalNav = () => {
                     <li>
                         <Link href="/experience">Experience</Link>
                     </li>
-                    <li>
-                        <Link href="/photography">Photography</Link>
-                    </li>
                 </ul>
             </ContentInner>
         </nav>

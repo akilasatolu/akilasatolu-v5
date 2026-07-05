@@ -49,10 +49,7 @@ export default function AboutPage() {
                 </ColBlock>
                 <p>I love learning new things and experiencing different cultures, and my time living in Australia remains one of the most memorable experiences of my life.</p>
                 <p>I share what I learn through blog posts <Link href="/">here</Link>, so feel free to check them out if you’re interested.</p>
-                <ColBlock>
-                    <p>I also showcase <Link href="/photography">photographs</Link> I have taken.</p>
-                    <p>For more about my experience and skills, please visit the <Link href="/experience">Experience</Link>.</p>
-                </ColBlock>
+                <p>For more about my experience and skills, please visit the <Link href="/experience">Experience</Link>.</p>
                 <p>Lastly, I’d like to end with one of my favorite quotes.</p>
                 <ColBlock>
                     <p>Don’t worry, be happy.</p>
