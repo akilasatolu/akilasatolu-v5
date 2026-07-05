@@ -3,58 +3,30 @@
 import { PageTitle } from "@/components/atoms/PageTitle";
 import { BlogPostList } from "@/components/organisms/BlogPostList";
 import { BlogTagList } from "@/components/organisms/BlogTagList";
-import {
-    matchesBlogDescription,
-    sanitizeBlogSearchQuery,
-} from "@/lib/blogSearch";
 import type { BlogPost } from "@/types/types";
-import { useMemo, useState, type ChangeEvent } from "react";
+import { useMemo, useState } from "react";
 
 type BlogPageContentProps = {
     posts: BlogPost[];
 };
 
-type BlogSearchPanelProps = {
+type BlogTagSidebarProps = {
     className?: string;
-    showTitle?: boolean;
     collapsibleTags?: boolean;
-    searchQuery: string;
-    onSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
     sortedTags: [string, number][];
     selectedTag: string | null;
     onTagClick: (tag: string) => void;
 };
 
-const BlogSearchPanel = ({
+const BlogTagSidebar = ({
     className = "",
-    showTitle = true,
     collapsibleTags = false,
-    searchQuery,
-    onSearchChange,
     sortedTags,
     selectedTag,
     onTagClick,
-}: BlogSearchPanelProps) => {
+}: BlogTagSidebarProps) => {
     return (
         <aside className={className}>
-            {showTitle ? (
-                <p className="text-lg font-semibold tracking-tight text-foreground">
-                    Search
-                </p>
-            ) : null}
-            <label className={showTitle ? "mt-4 block" : "block"}>
-                <span className="sr-only">Filter posts by description</span>
-                <input
-                    type="search"
-                    value={searchQuery}
-                    onChange={onSearchChange}
-                    maxLength={100}
-                    autoComplete="off"
-                    spellCheck={false}
-                    placeholder="Search by keyword"
-                    className="w-full rounded-md border border-[color:var(--border)] bg-[color:var(--card-bg)] px-3 py-2 text-sm text-foreground placeholder:text-[color:var(--muted)]"
-                />
-            </label>
             <BlogTagList
                 key={
                     collapsibleTags
@@ -72,7 +44,6 @@ const BlogSearchPanel = ({
 
 export const BlogPageContent = ({ posts }: BlogPageContentProps) => {
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
-    const [searchQuery, setSearchQuery] = useState("");
 
     const sortedTags = useMemo(() => {
         const tagCounts = new Map<string, number>();
@@ -87,30 +58,18 @@ export const BlogPageContent = ({ posts }: BlogPageContentProps) => {
         );
     }, [posts]);
 
-    const tagFilteredPosts = useMemo(() => {
+    const filteredPosts = useMemo(() => {
         if (!selectedTag) {
             return posts;
         }
         return posts.filter((post) => post.tags.includes(selectedTag));
     }, [posts, selectedTag]);
 
-    const filteredPosts = useMemo(() => {
-        return tagFilteredPosts.filter((post) =>
-            matchesBlogDescription(post.description, searchQuery),
-        );
-    }, [tagFilteredPosts, searchQuery]);
-
     const handleTagClick = (tag: string) => {
         setSelectedTag((current) => (current === tag ? null : tag));
     };
 
-    const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(sanitizeBlogSearchQuery(event.target.value));
-    };
-
-    const searchPanelProps = {
-        searchQuery,
-        onSearchChange: handleSearchChange,
+    const tagSidebarProps = {
         sortedTags,
         selectedTag,
         onTagClick: handleTagClick,
@@ -120,19 +79,18 @@ export const BlogPageContent = ({ posts }: BlogPageContentProps) => {
         <div className="flex min-h-0 w-full flex-1 flex-col gap-8 md:flex-row md:items-stretch md:gap-4">
             <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col md:flex-1">
                 <PageTitle title="Blog" />
-                <BlogSearchPanel
-                    {...searchPanelProps}
-                    showTitle={false}
+                <BlogTagSidebar
+                    {...tagSidebarProps}
                     collapsibleTags
                     className="mt-8 md:hidden"
                 />
                 <BlogPostList
-                    key={`${selectedTag ?? ""}\0${searchQuery}`}
+                    key={selectedTag ?? ""}
                     posts={filteredPosts}
                 />
             </div>
-            <BlogSearchPanel
-                {...searchPanelProps}
+            <BlogTagSidebar
+                {...tagSidebarProps}
                 className="hidden w-full shrink-0 md:block md:min-h-full md:max-w-[30%] md:min-w-[20%] md:grow md:shrink md:basis-[25%] md:self-stretch md:border-l md:border-[color:var(--border)] md:pl-4"
             />
         </div>
