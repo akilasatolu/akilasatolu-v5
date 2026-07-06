@@ -1,4 +1,7 @@
-import type { BreadcrumbItem } from "@/atoms/breadcrumbAtom";
+export type BreadcrumbItem = {
+    label: string;
+    href?: string;
+};
 
 const SEGMENT_LABELS: Record<string, string> = {
     blog: "Blog",

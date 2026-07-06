@@ -1,7 +1,7 @@
 "use client";
 
-import { breadcrumbItemsAtom, type BreadcrumbItem } from "@/atoms/breadcrumbAtom";
-import { useSetAtom } from "jotai";
+import { useSetBreadcrumbItems } from "@/components/providers/BreadcrumbProvider";
+import type { BreadcrumbItem } from "@/lib/breadcrumbs";
 import { useEffect } from "react";
 
 type BreadcrumbSetterProps = {
@@ -9,7 +9,7 @@ type BreadcrumbSetterProps = {
 };
 
 export const BreadcrumbSetter = ({ items }: BreadcrumbSetterProps) => {
-    const setItems = useSetAtom(breadcrumbItemsAtom);
+    const setItems = useSetBreadcrumbItems();
 
     useEffect(() => {
         setItems(items);

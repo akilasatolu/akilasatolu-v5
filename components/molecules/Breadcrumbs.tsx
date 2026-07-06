@@ -1,14 +1,13 @@
 "use client";
 
-import { breadcrumbItemsAtom } from "@/atoms/breadcrumbAtom";
+import { useBreadcrumbItems } from "@/components/providers/BreadcrumbProvider";
 import { getBreadcrumbsFromPathname } from "@/lib/breadcrumbs";
-import { useAtomValue } from "jotai";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export const Breadcrumbs = () => {
     const pathname = usePathname();
-    const overrideItems = useAtomValue(breadcrumbItemsAtom);
+    const overrideItems = useBreadcrumbItems();
     const items = overrideItems ?? getBreadcrumbsFromPathname(pathname);
 
     return (

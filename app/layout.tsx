@@ -3,7 +3,7 @@ import { IBM_Plex_Mono } from "next/font/google";
 import { ContentInner } from "@/components/templates/ContentInner";
 import { Footer } from "@/components/organisms/Footer";
 import { Header } from "@/components/organisms/Header";
-import { JotaiProvider } from "@/components/providers/JotaiProvider";
+import { BreadcrumbProvider } from "@/components/providers/BreadcrumbProvider";
 import "@/styles/globals.css";
 
 export const ibmPlexMono = IBM_Plex_Mono({
@@ -44,7 +44,7 @@ export default function RootLayout({
             className={`${ibmPlexMono.variable} ${ibmPlexMono.className} h-full antialiased`}
         >
             <body className="m-0 flex min-h-dvh w-full flex-col p-0 font-sans antialiased">
-                <JotaiProvider>
+                <BreadcrumbProvider>
                     <Header />
                     <main className="flex min-h-0 w-full flex-1 flex-col items-center">
                         <ContentInner styles="flex min-h-0 w-full flex-1 flex-col">
@@ -52,7 +52,7 @@ export default function RootLayout({
                         </ContentInner>
                     </main>
                     <Footer />
-                </JotaiProvider>
+                </BreadcrumbProvider>
             </body>
         </html>
     );

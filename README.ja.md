@@ -17,7 +17,7 @@ Next.js で構築した個人ポートフォリオサイトです。ブログ・
 | 言語 | [TypeScript](https://www.typescriptlang.org/) 5 |
 | スタイル | [Tailwind CSS](https://tailwindcss.com/) 4（PostCSS） |
 | フォント | [Geist](https://vercel.com/font)（`next/font/google`） |
-| 状態管理 | [Jotai](https://jotai.org/) |
+| 状態管理 | React Context |
 | Markdown | [marked](https://marked.js.org/)（ブログ本文） |
 | AWS SDK | [@aws-sdk/client-s3](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/)（ビルド時・サーバーから S3 取得） |
 

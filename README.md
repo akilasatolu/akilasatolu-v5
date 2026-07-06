@@ -17,7 +17,7 @@ Personal portfolio site built with Next.js. Content (blog, photography, experien
 | Language | [TypeScript](https://www.typescriptlang.org/) 5 |
 | Styling | [Tailwind CSS](https://tailwindcss.com/) 4 (PostCSS) |
 | Fonts | [Geist](https://vercel.com/font) (`next/font/google`) |
-| State | [Jotai](https://jotai.org/) |
+| State | React Context |
 | Markdown | [marked](https://marked.js.org/) (blog body) |
 | AWS SDK | [@aws-sdk/client-s3](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/) (fetch from S3 at build time / on the server) |
 
