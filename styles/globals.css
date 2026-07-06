@@ -28,6 +28,10 @@ a:visited {
     color: var(--accent-visited);
 }
 
+a:visited.no-visited {
+    color: var(--accent);
+}
+
 a,
 button {
     cursor: pointer;

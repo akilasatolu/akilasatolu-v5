@@ -27,7 +27,7 @@ export default function HomePage() {
             <p>Outside of work, I go to the gym to stay healthy.</p>
             <p>My dream is to be like Jason Statham.</p>
             <p>I also enjoy taking photos of beautiful scenery and listening to music.</p>
-            <p>Recently, I’ve been listening to <a href="https://www.oneokrock.com/en/" target="_blank" rel="noopener noreferrer">ONE OK ROCK</a> a lot.</p>
+            <p>Recently, I’ve been listening to <a href="https://www.oneokrock.com/en/" target="_blank" rel="noopener noreferrer" className="font-bold">ONE OK ROCK</a> a lot.</p>
             <p>I love learning new things and experiencing different cultures, and my time living in Australia remains one of the most memorable experiences of my life.</p>
             <p>I share what I learn through blog posts <Link href="/blog" className="font-bold">here</Link>, so feel free to check them out if you’re interested.</p>
             <p>For more about my experience and skills, please visit the <Link href="/experience" className="font-bold">Experience</Link>.</p>

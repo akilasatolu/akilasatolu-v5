@@ -25,7 +25,7 @@ export const Breadcrumbs = () => {
                                 </span>
                             ) : null}
                             {item.href && !isLast ? (
-                                <Link href={item.href} className="truncate">
+                                <Link href={item.href} className="truncate no-visited">
                                     {item.label}
                                 </Link>
                             ) : (
