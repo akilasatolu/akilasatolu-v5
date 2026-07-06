@@ -13,7 +13,7 @@ export const Breadcrumbs = () => {
 
     return (
         <nav aria-label="Breadcrumb">
-            <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[color:var(--muted)]">
+            <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[color:var(--muted)] m-0 p-0">
                 {items.map((item, index) => {
                     const isLast = index === items.length - 1;
 

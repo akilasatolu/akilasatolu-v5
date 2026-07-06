@@ -46,7 +46,7 @@ export default function RootLayout({
             <body className="m-0 flex min-h-dvh w-full flex-col p-0 font-sans antialiased">
                 <JotaiProvider>
                     <Header />
-                    <main className="flex min-h-0 flex-1 flex-col items-center">
+                    <main className="flex min-h-0 w-full flex-1 flex-col items-center">
                         <ContentInner styles="flex min-h-0 w-full flex-1 flex-col">
                             {children}
                         </ContentInner>
