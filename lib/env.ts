@@ -32,7 +32,7 @@ export function getS3PathBlog(): string {
     return requireEnv("S3_PATH_BLOG");
 }
 
-/** ブログ・写真の画像が載る CloudFront 等（末尾スラッシュなし）。dev / standalone で `img` の絶対 URL に使う。 */
+/** ブログ画像が載る CloudFront 等（末尾スラッシュなし）。dev / standalone で `img` の絶対 URL に使う。 */
 export function getContentCdnBase(): string | undefined {
     const v = process.env.CONTENT_CDN_BASE?.trim();
     return v || undefined;
@@ -42,15 +42,6 @@ export function joinContentCdnBase(base: string, objectKey: string): string {
     const b = base.replace(/\/+$/, "");
     const k = objectKey.replace(/^\/+/, "");
     return `${b}/${k}`;
-}
-
-/** Photography（/photography） */
-export function getS3BucketPhotography(): string {
-    return requireEnv("S3_BUCKET_PHOTOGRAPHY");
-}
-
-export function getS3PathPhotography(): string {
-    return requireEnv("S3_PATH_PHOTOGRAPHY");
 }
 
 /** Experience（/experience） */

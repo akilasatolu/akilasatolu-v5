@@ -26,7 +26,7 @@ marked.use({
             }
             const src = getBlogImageUrl(href);
             const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
-            return `<img src="${src}" alt="${escapeHtml(text)}"${titleAttr} loading="lazy" class="blog-content-img" />`;
+            return `<img src="${src}" alt="${escapeHtml(text)}"${titleAttr} loading="lazy" />`;
         },
     },
 });
