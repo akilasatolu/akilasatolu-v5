@@ -1,10 +1,8 @@
-import { BlogPostNavigation } from "@/components/organisms/BlogPostNavigation";
 import {
     getBlogPostMarkdown,
     getPublishedBlogPostBySlug,
     getPublishedBlogPosts,
 } from "@/lib/blog";
-import { getAdjacentPublishedBlogPosts } from "@/lib/blogNeighbors";
 import { renderBlogMarkdown } from "@/lib/blogMarkdown";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -42,8 +40,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         notFound();
     }
 
-    const posts = await getPublishedBlogPosts();
-    const neighbors = getAdjacentPublishedBlogPosts(slug, posts);
     const markdown = await getBlogPostMarkdown(slug);
     const html = renderBlogMarkdown(markdown);
 
@@ -53,7 +49,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 className="blog-content min-h-0 flex-1"
                 dangerouslySetInnerHTML={{ __html: html }}
             />
-            <BlogPostNavigation {...neighbors} />
         </div>
     );
 }

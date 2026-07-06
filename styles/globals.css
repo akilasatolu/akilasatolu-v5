@@ -43,12 +43,6 @@ a:visited {
     color: var(--accent-visited);
 }
 
-a.blog-post-card,
-a.blog-post-card:hover,
-a.blog-post-card:visited {
-    text-decoration: none;
-}
-
 a.social-icon-link,
 a.social-icon-link:visited {
     color: var(--muted);
