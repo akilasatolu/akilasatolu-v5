@@ -1,6 +1,6 @@
 import { PageTitle } from "@/components/atoms/PageTitle";
 import { ColBlock } from "@/components/atoms/ColBlock";
-import { SocialLinks } from "@/components/atoms/SocialLinks";
+import { SocialLinks } from "@/components/molecules/SocialLinks";
 import Link from "next/link";
 
 export default function AboutPage() {
