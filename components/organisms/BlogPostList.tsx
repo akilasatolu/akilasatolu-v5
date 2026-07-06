@@ -16,11 +16,12 @@ export const BlogPostList = ({ posts }: BlogPostListProps) => {
     return (
         <ul className="list-disc space-y-2">
             {posts.map((post) => (
-                <li key={post.slug} className="text-foreground">
+                <li key={post.slug}>
                     {formatBlogDate(post.date)} :{" "}
                     <Link href={`/blog/${post.slug}/`}>{post.title}</Link>
                 </li>
-            ))}
-        </ul>
+            ))
+            }
+        </ul >
     );
 };

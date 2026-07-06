@@ -4,6 +4,6 @@ type PageTitleProps = {
 
 export const PageTitle = (props: PageTitleProps) => {
     return (
-        <h1 className="text-3xl font-semibold tracking-tight">{props.title}</h1>
+        <h1 className="tracking-tight">{props.title}</h1>
     );
 }
