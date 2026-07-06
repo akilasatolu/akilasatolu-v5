@@ -24,7 +24,6 @@ export const SocialLinks = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={link.label}
-                        className="social-icon-link"
                     >
                         {link.icon === "linkedin" ? (
                             <LinkedInIcon className="size-6" />

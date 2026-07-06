@@ -44,11 +44,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     const html = renderBlogMarkdown(markdown);
 
     return (
-        <div className="flex min-h-0 w-full flex-1 flex-col">
-            <div
-                className="blog-content min-h-0 flex-1"
-                dangerouslySetInnerHTML={{ __html: html }}
-            />
-        </div>
+        <div
+            className="flex min-h-0 w-full flex-1 flex-col"
+            dangerouslySetInnerHTML={{ __html: html }}
+        />
     );
 }

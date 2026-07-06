@@ -8,7 +8,7 @@ export default async function ExperiencePage() {
     const { Projects } = data;
 
     return (
-        <div className="flex min-h-0 w-full flex-1 flex-col justify-start">
+        <div className="flex min-h-0 w-full flex-1 flex-col">
             <PageTitle title="Experience" />
             <ul className="divide-y divide-[color:var(--border)]">
                 {Projects.map((pj) => {
