@@ -1,19 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Mono } from "next/font/google";
 import { ContentInner } from "@/components/templates/ContentInner";
 import { Footer } from "@/components/organisms/Footer";
 import { Header } from "@/components/organisms/Header";
 import { JotaiProvider } from "@/components/providers/JotaiProvider";
 import "@/styles/globals.css";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
+export const ibmPlexMono = IBM_Plex_Mono({
     subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
-    subsets: ["latin"],
+    variable: "--font-ibm-plex-mono",
+    weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -45,13 +41,13 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+            className={`${ibmPlexMono.variable} ${ibmPlexMono.className} h-full antialiased`}
         >
-            <body className="flex min-h-dvh flex-col flex-1 font-sans antialiased">
+            <body className="m-0 flex min-h-dvh w-full flex-col p-0 font-sans antialiased">
                 <JotaiProvider>
                     <Header />
-                    <main className="flex min-h-0 flex-1 flex-col">
-                        <ContentInner styles="flex min-h-0 flex-1 flex-col">
+                    <main className="flex min-h-0 flex-1 flex-col items-center">
+                        <ContentInner styles="flex min-h-0 w-full flex-1 flex-col">
                             {children}
                         </ContentInner>
                     </main>
