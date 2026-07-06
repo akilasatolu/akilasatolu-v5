@@ -25,10 +25,7 @@ export const Breadcrumbs = () => {
                                 </span>
                             ) : null}
                             {item.href && !isLast ? (
-                                <Link
-                                    href={item.href}
-                                    className="truncate [--accent-visited:var(--accent)] hover:[--accent-visited:var(--accent-hover)]"
-                                >
+                                <Link href={item.href} className="truncate">
                                     {item.label}
                                 </Link>
                             ) : (
