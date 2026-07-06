@@ -4,6 +4,10 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 @import "./theme.css";
 
+* {
+    box-sizing: border-box;
+}
+
 html {
     color-scheme: light dark;
 }
@@ -41,6 +45,26 @@ p {
     overflow: hidden;
 }
 
-.blog-content>h1 {
-    margin-bottom: 2.25rem;
+code {
+    background-color: var(--code-background);
+}
+
+pre>code {
+    display: block;
+    width: 100%;
+    padding: 0.25rem;
+    border-radius: 0.125rem;
+    border: 1px solid var(--border);
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid var(--border);
+    width: 100%;
+}
+
+table th,
+table td {
+    padding: 0.25rem;
+    border: 1px solid var(--border);
 }
