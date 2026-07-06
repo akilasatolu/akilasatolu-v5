@@ -9,7 +9,7 @@ type BlogPostListProps = {
 export const BlogPostList = ({ posts }: BlogPostListProps) => {
     if (posts.length === 0) {
         return (
-            <p className="text-sm text-[color:var(--muted)]">No posts found.</p>
+            <p>No posts found.</p>
         );
     }
 

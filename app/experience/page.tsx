@@ -10,32 +10,27 @@ export default async function ExperiencePage() {
     return (
         <div className="flex min-h-0 w-full flex-1 flex-col">
             <PageTitle title="Experience" />
-            <ul className="divide-y divide-[color:var(--border)]">
-                {Projects.map((pj) => {
-                    const [start, end] = pj.pjPeriod;
-                    const periodLabel = `${start} — ${end}`;
+            {Projects.map((pj) => {
+                const [start, end] = pj.pjPeriod;
+                const periodLabel = `${start} — ${end}`;
 
-                    return (
-                        <li key={pj.pjTitle} className="pt-6 pb-6 first:pt-0 last:pb-0">
-                            <p className="text-sm text-[color:var(--muted)]">{periodLabel}</p>
-                            <p className="mt-2 text-xl font-semibold tracking-tight text-foreground">
-                                {pj.pjTitle}
-                            </p>
-                            <p className="mt-3 text-foreground">{pj.pjDescription}</p>
-                            <ul className="mt-4 flex flex-wrap gap-2">
+                return (
+                    <article key={pj.pjTitle}>
+                        <h2>{pj.pjTitle}</h2>
+                        <p className="text-[color:var(--muted)]">{periodLabel}</p>
+                        {pj.pjTechList.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
                                 {pj.pjTechList.map((tech) => (
-                                    <li
-                                        key={`${pj.pjTitle}-${tech.skill}`}
-                                        className="rounded-md border border-[color:var(--border)] bg-[color:var(--card-bg)] px-2 py-0.5 text-xs text-foreground"
-                                    >
+                                    <code key={`${pj.pjTitle}-${tech.skill}`}>
                                         {tech.skill}
-                                    </li>
+                                    </code>
                                 ))}
-                            </ul>
-                        </li>
-                    );
-                })}
-            </ul>
+                            </div>
+                        )}
+                        <p>{pj.pjDescription}</p>
+                    </article>
+                );
+            })}
         </div>
     );
-};
+}
