@@ -13,9 +13,6 @@ export const GlobalNav = () => {
                         <Link href="/">Home</Link>
                     </li>
                     <li>
-                        <Link href="/about">About</Link>
-                    </li>
-                    <li>
                         <Link href="/experience">Experience</Link>
                     </li>
                 </ul>
