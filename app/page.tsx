@@ -6,7 +6,7 @@ export const dynamic = "force-static";
 
 export default function HomePage() {
     return (
-        <div className="flex min-h-0 w-full flex-1 flex-col">
+        <>
             <PageTitle title="Hi there, I’m akilasatolu." />
             <SocialLinks />
             <p>Since 2020, I have been working as a software engineer in Japan, developing web services.</p>
@@ -37,6 +37,6 @@ export default function HomePage() {
                 <li>A life that never gives up, and a heart that never loses.</li>
             </ul>
             <p>I hope our paths cross in a meaningful way.</p>
-        </div>
+        </>
     );
 }

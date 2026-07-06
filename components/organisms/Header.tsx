@@ -3,8 +3,8 @@ import { ContentInner } from "@/components/templates/ContentInner";
 
 export const Header = () => {
     return (
-        <header className="flex w-full justify-center border-b border-[var(--border)]">
-            <ContentInner styles="flex justify-start">
+        <header className="flex w-full justify-center border-b border-[color:var(--border)]">
+            <ContentInner className="flex justify-start">
                 <Breadcrumbs />
             </ContentInner>
         </header>

@@ -6,7 +6,7 @@ import { Header } from "@/components/organisms/Header";
 import { BreadcrumbProvider } from "@/components/providers/BreadcrumbProvider";
 import "@/styles/globals.css";
 
-export const ibmPlexMono = IBM_Plex_Mono({
+const ibmPlexMono = IBM_Plex_Mono({
     subsets: ["latin"],
     variable: "--font-ibm-plex-mono",
     weight: ["400", "500", "600", "700"],
@@ -47,7 +47,7 @@ export default function RootLayout({
                 <BreadcrumbProvider>
                     <Header />
                     <main className="flex min-h-0 w-full flex-1 flex-col items-center">
-                        <ContentInner styles="flex min-h-0 w-full flex-1 flex-col">
+                        <ContentInner className="flex min-h-0 w-full flex-1 flex-col">
                             {children}
                         </ContentInner>
                     </main>

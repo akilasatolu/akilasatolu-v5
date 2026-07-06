@@ -10,4 +10,4 @@ export const Footer = () => {
             </ContentInner>
         </footer>
     );
-}
+};

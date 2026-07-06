@@ -4,12 +4,13 @@ import { getS3BucketBlog, getS3PathBlog } from "@/lib/env";
 import { contentImagePublicUrl } from "@/lib/contentAssetUrl";
 import { fetchS3Text } from "@/lib/s3";
 import type { BlogPost } from "@/types/types";
+import { cache } from "react";
 
 const BLOG_POSTS_PREFIX = "akilasatolu-blog/";
 const BLOG_POSTS_IMG_PREFIX = "akilasatolu-blog-image/";
 
 /** ビルド時（SSG）に S3 から blog JSON を取得し、公開記事（draft: false）のみ返す */
-export async function getPublishedBlogPosts(): Promise<BlogPost[]> {
+export const getPublishedBlogPosts = cache(async (): Promise<BlogPost[]> => {
     const raw = await fetchS3Text({
         bucket: getS3BucketBlog(),
         key: getS3PathBlog(),
@@ -19,12 +20,14 @@ export async function getPublishedBlogPosts(): Promise<BlogPost[]> {
     return posts
         .filter((post) => !post.draft)
         .sort((a, b) => b.date.localeCompare(a.date));
-}
+});
 
-export async function getPublishedBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
-    const posts = await getPublishedBlogPosts();
-    return posts.find((post) => post.slug === slug);
-}
+export const getPublishedBlogPostBySlug = cache(
+    async (slug: string): Promise<BlogPost | undefined> => {
+        const posts = await getPublishedBlogPosts();
+        return posts.find((post) => post.slug === slug);
+    },
+);
 
 /** S3: akilasatolu-blog/{slug}.md */
 export async function getBlogPostMarkdown(slug: string): Promise<string> {

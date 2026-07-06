@@ -8,9 +8,7 @@ type BlogPostListProps = {
 
 export const BlogPostList = ({ posts }: BlogPostListProps) => {
     if (posts.length === 0) {
-        return (
-            <p>No posts found.</p>
-        );
+        return <p className="text-[color:var(--muted)]">No posts found.</p>;
     }
 
     return (
@@ -20,8 +18,7 @@ export const BlogPostList = ({ posts }: BlogPostListProps) => {
                     {formatBlogDate(post.date)} :{" "}
                     <Link href={`/blog/${post.slug}/`}>{post.title}</Link>
                 </li>
-            ))
-            }
-        </ul >
+            ))}
+        </ul>
     );
 };

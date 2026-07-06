@@ -1,4 +1,4 @@
-import { BreadcrumbSetter } from "@/components/atoms/BreadcrumbSetter";
+import { BreadcrumbSetter } from "@/components/providers/BreadcrumbSetter";
 import { getPublishedBlogPostBySlug } from "@/lib/blog";
 import { notFound } from "next/navigation";
 

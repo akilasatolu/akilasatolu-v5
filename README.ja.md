@@ -2,7 +2,7 @@
 
 [English](README.md) | [日本語](README.ja.md)
 
-Next.js で構築した個人ポートフォリオサイトです。ブログ・写真・経験などのコンテンツはリポジトリや S3 バケットを分けて管理し、アプリ本体は静的 HTML のみを配信し、画像は CloudFront から読み込みます。
+Next.js で構築した個人ポートフォリオサイトです。ブログ・経験などのコンテンツはリポジトリや S3 バケットを分けて管理し、アプリ本体は静的 HTML のみを配信し、画像は CloudFront から読み込みます。
 
 ---
 
@@ -16,10 +16,10 @@ Next.js で構築した個人ポートフォリオサイトです。ブログ・
 | UI | [React](https://react.dev/) 19 |
 | 言語 | [TypeScript](https://www.typescriptlang.org/) 5 |
 | スタイル | [Tailwind CSS](https://tailwindcss.com/) 4（PostCSS） |
-| フォント | [Geist](https://vercel.com/font)（`next/font/google`） |
-| 状態管理 | React Context |
+| フォント | [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono)（`next/font/google`） |
+| 状態管理 | React Context（パンくずの上書き） |
 | Markdown | [marked](https://marked.js.org/)（ブログ本文） |
-| AWS SDK | [@aws-sdk/client-s3](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/)（ビルド時・サーバーから S3 取得） |
+| AWS SDK | [@aws-sdk/client-s3](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/)（ビルド時に S3 から取得） |
 
 ### 品質・開発ツール
 
@@ -45,13 +45,13 @@ Next.js で構築した個人ポートフォリオサイトです。ブログ・
 ### データの流れ
 
 ```text
-[コンテンツ S3]  blog / photography / experience 各バケット
-       │  JSON・Markdown（ビルド時 or サーバー取得）
+[コンテンツ S3]  blog / experience 各バケット
+       │  JSON・Markdown（ビルド時）
        ▼
 [Next.js]  akilasatolu-v5
        │  画像 URL のみ参照（バイナリは同期しない）
        ▼
-[CloudFront]  /akilasatolu-blog-image/*  /akilasatolu-photography/*
+[CloudFront]  /akilasatolu-blog-image/*
        ▲
 [デプロイ S3]  out/（HTML/CSS/JS）← CI が sync
 ```
@@ -60,8 +60,8 @@ Next.js で構築した個人ポートフォリオサイトです。ブログ・
 
 ```text
 app/                 # App Router ページ
-components/          # atoms / organisms / templates
-lib/                 # S3、ブログ・写真・Experience、画像 URL
+components/          # atoms / molecules / organisms / templates / providers
+lib/                 # S3、ブログ・Experience、パンくず、画像 URL
 scripts/             # build-static.mjs
 public/              # favicon 等（画像は CF パスを参照）
 styles/
@@ -77,24 +77,20 @@ Dockerfile.dev       # 開発
 
 | パス | 内容 |
 |------|------|
-| `/` | ブログ一覧（公開記事のみ） |
-| `/blog/[slug]` | ブログ記事 |
-| `/photography` | 写真ギャラリー |
-| `/experience` | スキル・経験 |
-| `/about` | 私について |
+| `/` | ホーム / 自己紹介 |
+| `/blog/` | ブログ一覧（公開記事のみ） |
+| `/blog/[slug]/` | ブログ記事 |
+| `/experience/` | スキル・経験 |
 
 ---
 
 ## 設計のポイント
 
 - **ページ表示が速い** — あらかじめ生成した HTML を CDN から配信しているため、ページを開くたびにサーバー側の処理を待つ必要がありません。
-- **一覧の操作がすぐ反映される** — ブログ一覧の検索・タグの切り替え・ページ送りは、サーバーへの再リクエストなしでその場で結果が変わります。
-- **テーマ切り替えのちらつきを抑える** — ページ表示前にライト／ダークを反映し、設定はブラウザに保存されます。次回アクセス時も、ログインなしで同じ設定が続きます。
-- **押せる操作だけを表示する** — ページネーションは、先へ進めないときはボタンを出さないようにしています。「押せると思ったのに押せない」という迷いを減らします。
-- **どの端末でも見やすい** — 画面サイズに応じてレイアウトが変わるため、スマートフォンからデスクトップまで快適に閲覧できます。
-- **キーボードでも操作できる** — ボタンやリンクは Tab キーで順に移動でき、マウスがなくても操作できます。
+- **OS のテーマ設定に追従** — CSS の `prefers-color-scheme` でライト／ダークを切り替えます。
+- **セマンティック HTML** — `h1`、`h2`、`p`、`ul`、`article`、`code` などのネイティブ要素を活かし、カスタムスタイルは最小限にしています。
+- **パンくずナビゲーション** — パスから自動生成し、ブログ記事ページではタイトルで上書きします。
 - **画像は CDN 配信でコストを抑える** — ビルドのたびに画像ファイルを同梱せず、CDN から配信しています。デプロイのサイズと配信コストの両方を抑えられます。
-- **コンテンツを本体から分ける** — ブログ・写真・経験はそれぞれ別リポジトリで管理しています。コンテンツが更新されると自動で再ビルド・デプロイされ、データはほかの用途にも再利用できます。サイト本体はコンテンツの管理を担わず、表示と配信に専念できます。
+- **コンテンツを本体から分ける** — ブログ・経験はそれぞれ別リポジトリで管理しています。コンテンツが更新されると自動で再ビルド・デプロイされ、データはほかの用途にも再利用できます。サイト本体はコンテンツの管理を担わず、表示と配信に専念できます。
   - ブログ: [akilasatolu-blog](https://github.com/akilasatolu/akilasatolu-blog)
-  - 写真: [akilasatolu-photography](https://github.com/akilasatolu/akilasatolu-photography)
   - 経験: [akilasatolu-experience](https://github.com/akilasatolu/akilasatolu-experience)
