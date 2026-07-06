@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ContentInner } from "@/components/templates/ContentInner";
 import { Footer } from "@/components/organisms/Footer";
-import { GlobalNav } from "@/components/organisms/GlobalNav";
 import { Header } from "@/components/organisms/Header";
 import { JotaiProvider } from "@/components/providers/JotaiProvider";
 import { ModalProvider } from "@/components/providers/ModalProvider";
@@ -60,7 +59,6 @@ export default function RootLayout({
                     <ThemeProvider>
                         <ModalProvider>
                             <Header />
-                            <GlobalNav />
                             <main className="flex min-h-0 flex-1 flex-col">
                                 <ContentInner styles="flex min-h-0 flex-1 flex-col">
                                     {children}
