@@ -4,7 +4,6 @@ import { ContentInner } from "@/components/templates/ContentInner";
 import { Footer } from "@/components/organisms/Footer";
 import { Header } from "@/components/organisms/Header";
 import { JotaiProvider } from "@/components/providers/JotaiProvider";
-import { ModalProvider } from "@/components/providers/ModalProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ThemeScript } from "@/components/providers/ThemeScript";
 import "@/styles/globals.css";
@@ -57,15 +56,13 @@ export default function RootLayout({
             <body className="flex min-h-dvh flex-col flex-1 font-sans antialiased">
                 <JotaiProvider>
                     <ThemeProvider>
-                        <ModalProvider>
-                            <Header />
-                            <main className="flex min-h-0 flex-1 flex-col">
-                                <ContentInner styles="flex min-h-0 flex-1 flex-col">
-                                    {children}
-                                </ContentInner>
-                            </main>
-                            <Footer />
-                        </ModalProvider>
+                        <Header />
+                        <main className="flex min-h-0 flex-1 flex-col">
+                            <ContentInner styles="flex min-h-0 flex-1 flex-col">
+                                {children}
+                            </ContentInner>
+                        </main>
+                        <Footer />
                     </ThemeProvider>
                 </JotaiProvider>
             </body>
