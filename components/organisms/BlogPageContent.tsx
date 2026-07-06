@@ -1,5 +1,3 @@
-"use client";
-
 import { PageTitle } from "@/components/atoms/PageTitle";
 import { BlogPostList } from "@/components/organisms/BlogPostList";
 import type { BlogPost } from "@/types/types";

@@ -1,10 +1,11 @@
-import { BlogPageContent } from "@/components/organisms/BlogPageContent";
-import { getPublishedBlogPosts } from "@/lib/blog";
+import { PageTitle } from "@/components/atoms/PageTitle";
 
 export const dynamic = "force-static";
 
-export default async function HomePage() {
-    const posts = await getPublishedBlogPosts();
-
-    return <BlogPageContent posts={posts} />;
+export default function HomePage() {
+    return (
+        <div className="flex min-h-0 w-full flex-1 flex-col">
+            <PageTitle title="Home" />
+        </div>
+    );
 }

@@ -7,6 +7,9 @@ export const GlobalNav = () => {
             <ContentInner styles="flex justify-end">
                 <ul className="flex flex-row flex-wrap justify-start gap-x-4 gap-y-2">
                     <li>
+                        <Link href="/blog/">Blog</Link>
+                    </li>
+                    <li>
                         <Link href="/">Home</Link>
                     </li>
                     <li>
