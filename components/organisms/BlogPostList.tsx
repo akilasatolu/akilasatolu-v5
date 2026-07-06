@@ -9,12 +9,12 @@ type BlogPostListProps = {
 export const BlogPostList = ({ posts }: BlogPostListProps) => {
     if (posts.length === 0) {
         return (
-            <p className="mt-8 text-sm text-[color:var(--muted)]">No posts found.</p>
+            <p className="text-sm text-[color:var(--muted)]">No posts found.</p>
         );
     }
 
     return (
-        <ul className="mt-8 list-disc space-y-2 pl-6">
+        <ul className="list-disc space-y-2 pl-6">
             {posts.map((post) => (
                 <li key={post.slug} className="text-foreground">
                     {formatBlogDate(post.date)} :{" "}

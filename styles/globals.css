@@ -36,3 +36,7 @@ button {
 p {
     overflow: hidden;
 }
+
+.blog-content>h1 {
+    margin-bottom: 2.5rem;
+}

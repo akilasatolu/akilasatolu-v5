@@ -10,7 +10,7 @@ export default async function ExperiencePage() {
     return (
         <div className="flex min-h-0 w-full flex-1 flex-col justify-start">
             <PageTitle title="Experience" />
-            <ul className="mt-8 divide-y divide-[color:var(--border)]">
+            <ul className="divide-y divide-[color:var(--border)]">
                 {Projects.map((pj) => {
                     const [start, end] = pj.pjPeriod;
                     const periodLabel = `${start} — ${end}`;

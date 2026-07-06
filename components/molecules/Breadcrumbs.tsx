@@ -20,7 +20,7 @@ export const Breadcrumbs = () => {
                     return (
                         <li key={`${item.label}-${index}`} className="flex min-w-0 items-center gap-2">
                             {index > 0 ? (
-                                <span aria-hidden="true" className="text-[color:var(--border)]">
+                                <span aria-hidden="true" className="text-[color:var(--muted)]">
                                     /
                                 </span>
                             ) : null}

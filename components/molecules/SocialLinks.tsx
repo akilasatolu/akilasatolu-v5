@@ -16,7 +16,7 @@ const socialLinks = [
 
 export const SocialLinks = () => {
     return (
-        <nav aria-label="Social links" className="flex items-center gap-4">
+        <nav aria-label="Social links" className="flex items-center gap-4 m-4">
             {socialLinks.map((link) => (
                 <a
                     key={link.href}
