@@ -5,7 +5,7 @@ export const Footer = () => {
         <footer className="flex w-full justify-center border-t border-[color:var(--border)]">
             <ContentInner>
                 <div className="flex justify-center">
-                    <small>© 2026 akilasatolu</small>
+                    <small className="text-[var(--muted)]">© 2026 akilasatolu</small>
                 </div>
             </ContentInner>
         </footer>
