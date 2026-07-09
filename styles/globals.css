@@ -17,7 +17,6 @@ body {
 }
 
 a {
-    color: var(--accent);
     text-decoration: none;
     transition:
         color 0.15s ease,
@@ -28,12 +27,8 @@ a:hover {
     text-decoration: underline;
 }
 
-a:visited {
-    color: var(--accent-visited);
-}
-
-a:visited.no-visited {
-    color: var(--accent);
+a:visited.visited-reset {
+    color: LinkText;
 }
 
 a,

@@ -1,22 +1,10 @@
 :root {
-    --muted: #474747;
-    --accent: #1a0dab;
-    --accent-visited: #681da8;
-    --border: #e5e5e5;
-    --code-background: rgba(71, 71, 71, 0.1);
+    --muted: color-mix(in srgb, CanvasText 65%, Canvas);
+    --border: color-mix(in srgb, CanvasText 15%, Canvas);
+    --code-background: color-mix(in srgb, CanvasText 8%, Canvas);
 }
 
 @theme inline {
     --font-sans: var(--font-ibm-plex-mono);
     --font-mono: var(--font-ibm-plex-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --muted: #bfbfbf;
-        --accent: #99c3ff;
-        --accent-visited: #c58af9;
-        --border: #444444;
-        --code-background: rgba(191, 191, 191, 0.2);
-    }
 }
